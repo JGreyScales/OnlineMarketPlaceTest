@@ -11,6 +11,9 @@ A simple project to occupy time.
     - [ ] must allow user to set a product image
     - [ ] must allow user to set an age requirement
     - [ ] must try to calculate the shipment times of products
+- [ ] Users must be allowed to view an entire sellers page
+- [ ] When a product is sold, the seller should get 0.97x of the profit directly to their user account
+- [ ] have a mimiced screen for withdrawing money
 - [ ] must allow user upload "money" to the site
 - [ ] must allow user to spend their money on the site
 - [ ] must use the node.JS server for data requests
