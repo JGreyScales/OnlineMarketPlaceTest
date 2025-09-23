@@ -33,10 +33,9 @@ The main entry point for backend access from the native-react app
 ## products.js
 API commands for products this includes:
 - get product
-- post productDetails (image + bio + name)
+- post productDetails (image + bio + name + createdAt + modifiedAt)
 - get productRatings
 - post productRatings
-- get sellingHistory
 
 ## sellers.js
 API commands for sellers this includes:
@@ -47,7 +46,6 @@ API commands for sellers this includes:
 - get products (list)
 - post product
 - delete product
-- get sellingHistory
 
 ## users.js
 API commands for users this includes:
@@ -61,8 +59,9 @@ API commands for users this includes:
 - post bio
 - get funds
 - post funds
-- get purchaseHistory
 
+## transactions.js
+- get purchaseHistory (takes a single ID, this can be a product, transaction, user, or seller id)
 
 # Models
 ## db.js
