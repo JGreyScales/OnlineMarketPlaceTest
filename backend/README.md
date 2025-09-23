@@ -12,13 +12,22 @@ The main entry point for backend access from the native-react app
 // all below will use local cookies to grab userID, sellerID
 
 ## fundsController.js
-- allow the user to spend money: userID -> float
-- allow the user to add money: userID, Amount -> float
+- allow the user to spend money
+- allow the user to add money
+
+    ### Properties
+    userID
+    fundsAmount
+
+    ### Methods
+    getUserID
+    getFundsAmount
+    inquireFundsAmount
 
 ## productController.js
-- allow the product to be displayed: productID -> productOBJ
-- allow the product to be purchased: productID -> bool
-- allow a product to be modified: productID
+- allow the product to be displayed
+- allow the product to be purchased
+- allow a product to be modified
 
 ## sellerController.js
 - allow a user to register as a seller
