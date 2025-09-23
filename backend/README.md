@@ -16,13 +16,15 @@ The main entry point for backend access from the native-react app
 - allow the user to add money
 
     ### Properties
-    userID
-    fundsAmount
+    - userID
+    - fundsAmount
 
     ### Methods
-    getUserID
-    getFundsAmount
-    inquireFundsAmount
+    - getUserID
+    - getFundsAmount
+    - inquireFundsAmount
+    - spendMoney
+    - AddMoney
 
 ## productController.js
 - allow the product to be displayed
