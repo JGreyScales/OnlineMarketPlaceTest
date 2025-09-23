@@ -13,7 +13,7 @@ The main entry point for backend access from the native-react app
 
 // all below will use local cookies to grab userID, sellerID
 
-## fundsController.js
+## fundsController.js - Funds
 - allow the user to spend money
 - allow the user to add money
 
@@ -29,7 +29,7 @@ The main entry point for backend access from the native-react app
     - spendMoney
     - AddMoney
 
-## productController.js
+## productController.js - Products
 - allow the product to be displayed
 - allow the product to be purchased
 - allow a product to be modified
@@ -61,8 +61,17 @@ The main entry point for backend access from the native-react app
     - getCreatedAt
     - getInterestTags
 
+## products.js - ProductList
+- is used for storePageDetails when fetching randomized products
+    ### Properties
+    - Products
 
-## sellerController.js
+    ### Methods
+    - populateList(optional, seller id)
+    - getProductList
+
+
+## sellerController.js - Seller
 - allow a user to register as a seller
 - allow a seller to modify their profile
 - allow a product to be removed
@@ -71,7 +80,7 @@ The main entry point for backend access from the native-react app
 
     ### Properties
     - sellerID
-    - products
+    - ProductList
 
     ### Methods
     - populateObject
@@ -82,8 +91,9 @@ The main entry point for backend access from the native-react app
     - getsellerID
     - getproducts
 
-## transactionClass.js
+## transactionClass.js - Transaction
 - used to process indidivual transactions
+
     ### Properties
     - transactionID
     - sellerId
@@ -100,19 +110,20 @@ The main entry point for backend access from the native-react app
     - get productName
     - get date
 
-## transactionController.js
-- allows a user to get a transaction chain using one of any (transaction ID, seller ID, user ID, product ID) (if sent by a user, their userID will be used automatically to only filter their)
+## transactionController.js - TransactionList
+- allows a user to get a transaction chain using one of any (transaction ID, seller ID, user ID, product ID) (if sent by a user, their userID will be used automatically to only filter their results)
 
     ### Properties
     - Transactions
 
     ### Methods
+    - getTransactions
     - getTransactionById
     - getTransactionsByUserSearch
     - getTransactionsBySellerSearch
     - getTransactionsByProductIDSearch
 
-## userController.js
+## userController.js - User
 - allows a user to browse products based on interest tags
 - allow the user to select a random product from a random seller
 - allow a user to modify their settings
