@@ -1,0 +1,17 @@
+{
+	"folders": [
+		{
+			"name": "backend",
+			"path": "backend"
+		},
+		{
+			"name": "OnlineMarketplaceApp",
+			"path": "OnlineMarketplaceApp"
+		}
+	],
+	"settings": {
+		"jest.disabledWorkspaceFolders": [
+			"OnlineMarketPlaceTest"
+		]
+	}
+}

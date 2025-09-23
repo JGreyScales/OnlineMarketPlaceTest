@@ -1,9 +1,9 @@
-const fundController = require("./fundsController")
+const fundController = require("../../controllers/fundsController")
 
-desribe('Funds Controller', () => {
+describe('Funds Controller', () => {
     test("should add funds and return the new balance", () => {
         // Arrange
-        const userID = "1";
+        const userID = 1;
         const amount = 50.0;
 
         // Act
@@ -11,6 +11,6 @@ desribe('Funds Controller', () => {
 
 
         // Assert
-        expect(result).toBeGreaterThan(0);
+        expect(result).toBe(50.0);
     })
 })

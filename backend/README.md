@@ -25,6 +25,7 @@ The main entry point for backend access from the native-react app
 - allow a seller to modify their profile
 - allow a product to be removed
 - allow a product to be added
+- allow the storepage to be fetched
 
 ## transactionController.js
 // all 4 Id's will be checked on return, one of seller or user id must match the senders ID's
