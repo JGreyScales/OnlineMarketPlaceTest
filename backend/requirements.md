@@ -119,4 +119,5 @@ API commands for users this includes:
 - date
 
 userID -> SellerID -> Products (list) -> ProductID (from list) -> ProductID
+
 ProductID -> ProductSellerID -> SellerID -> userID
