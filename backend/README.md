@@ -26,10 +26,10 @@ The main entry point for backend access from the native-react app
     - getUserID
     - getFundsAmount
     - inquireFundsAmount
-    - spendMoney
-    - AddMoney
+    - removeMoney
+    - addMoney
 
-## productController.js - Products
+## productController.js - Product
 - allow the product to be displayed
 - allow the product to be purchased
 - allow a product to be modified
@@ -104,11 +104,11 @@ The main entry point for backend access from the native-react app
 
     ### Methods
     - populateObjectFromProductID
-    - get transactionID
-    - get ProductID
-    - get priceAmount
-    - get productName
-    - get date
+    - gettransactionID
+    - getProductID
+    - getPriceAmount
+    - getProductName
+    - getDate
 
 ## transactionController.js - TransactionList
 - allows a user to get a transaction chain using one of any (transaction ID, seller ID, user ID, product ID) (if sent by a user, their userID will be used automatically to only filter their results)
@@ -152,8 +152,10 @@ The main entry point for backend access from the native-react app
 API commands for products this includes:
 - get product
 - post productDetails (image + bio + name + createdAt + modifiedAt)
-- get productRatings
 - post productRatings
+- post product
+- delete product
+
 
 ## sellers.js
 API commands for sellers this includes:
@@ -162,24 +164,13 @@ API commands for sellers this includes:
 - get sellerID
 - delete sellerID
 - get products (list)
-- post product
-- delete product
 
 ## users.js
 API commands for users this includes:
 - get authenticateUser
-- get email
-- get id
-- delete id
-- get name
-- post name
-- post PFP
-- get PFP
-- get bio
-- post bio
-- get funds
-- post funds
-
+- get user
+- delete user
+- post user
 ## transactions.js
 - get purchaseHistory (takes a single ID, this can be a product, transaction, user, or seller id)
 
