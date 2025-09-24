@@ -167,8 +167,7 @@ API commands for sellers this includes:
 
 ## users.js
 API commands for users this includes:
-- get passwordHash
-- post passwordHash
+- get authenticateUser
 - get email
 - get id
 - delete id
