@@ -18,8 +18,8 @@ A simple project to occupy time.
 - [ ] have a mimiced screen for withdrawing money
 - [ ] must allow user upload "money" to the site
 - [ ] must allow user to spend their money on the site
-- [ ] must use the node.JS server for data requests
-- [ ] must use the MySQL server for data storage
+- [x] must use the node.JS server for data requests
+- [x] must use the MySQL server for data storage
 - [ ] must use properly formatted folders
 - [ ] must use test casing for all sections possible
     - [ ] must use JEST for react-native testing
