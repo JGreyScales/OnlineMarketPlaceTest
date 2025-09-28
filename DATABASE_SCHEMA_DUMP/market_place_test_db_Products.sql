@@ -22,7 +22,7 @@ CREATE TABLE `Products` (
   `productImage` longblob,
   `productName` varchar(20) DEFAULT 'My Product',
   `productBio` varchar(1000) DEFAULT 'My products bio',
-  `productPrice` decimal(10,0) unsigned NOT NULL,
+  `productPrice` decimal(10,2) unsigned NOT NULL,
   `updatedAt` date DEFAULT NULL,
   `createdAt` date DEFAULT NULL,
   PRIMARY KEY (`productID`)

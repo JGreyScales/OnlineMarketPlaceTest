@@ -21,7 +21,7 @@ CREATE TABLE `Transactions` (
   `userID` mediumint unsigned NOT NULL,
   `sellerID` mediumint unsigned NOT NULL,
   `productID` mediumint unsigned NOT NULL,
-  `priceAmount` decimal(10,0) NOT NULL,
+  `priceAmount` decimal(10,2) NOT NULL,
   `productName` varchar(20) DEFAULT NULL,
   `date` date DEFAULT NULL,
   PRIMARY KEY (`transactionID`)

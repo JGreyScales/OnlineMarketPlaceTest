@@ -20,7 +20,7 @@ CREATE TABLE `User` (
   `userID` mediumint unsigned NOT NULL AUTO_INCREMENT,
   `email` varchar(40) NOT NULL,
   `passwordHash` varchar(256) NOT NULL,
-  `userFundsAmount` decimal(10,0) NOT NULL DEFAULT '0',
+  `userFundsAmount` decimal(10,2) NOT NULL DEFAULT '0',
   `userPhoto` longblob NOT NULL,
   `userBio` varchar(250) DEFAULT 'my bio',
   `userName` varchar(20) DEFAULT 'user',

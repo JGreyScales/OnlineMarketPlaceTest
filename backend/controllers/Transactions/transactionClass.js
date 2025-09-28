@@ -5,6 +5,7 @@ class Transaction {
     #priceAmount
     #productName
     #date
+    MAX_TRANSACTION_NAME_LENGTH = 20;
 
     constructor(){}
 
