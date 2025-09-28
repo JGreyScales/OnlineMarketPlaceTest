@@ -194,42 +194,54 @@ API commands for users this includes:
 // database schema connection path
 
 / User
-- userID (Primary, Not Null)
-- email
-- password
-- userFundsAmount
-- userPhoto
-- userBio
-- userName
-- interestTags
+- userID (Primary, Not Null) (unsigned mediumint)
+- email (varchar(40))
+- password (varchar(256))
+- userFundsAmount (Decimal) # for fixed-point precision
+- userPhoto (LONGBLOB)
+- userBio (varchar(250))
+- userName (varchar(20))
 
 / Seller
-- sellerID (Primary, Not Null)
-- userID (Secondary, Not Null) // the userID of the seller
-- Products (list of ID's)
-- storepageBio
-- storepagePhoto
-- storepageName
+- sellerID (Primary, Not Null) (unsigned mediumint)
+- storepageBio (varchar(500))
+- storepagePhoto (BLOB)
+- storepageName (varchar(25))
 
-/ Product
-- productID (Primary, Not Null)
-- sellerID (Not Null)
-- productImage
-- productName
-- productBio
-- productRating (list of bytes)
-- updatedAt
-- createdAt
-- interestTags
+/ Products
+- productID (Primary, Not Null) (unsigned mediumint)
+- sellerID (Not Null) (unsigned mediumint)
+- productImage (LONGBLOB)
+- productName (varchar(20))
+- productBio (varchar(1000))
+- productPrice (Decimal(10,2))
+- updatedAt (DATE)
+- createdAt (DATE)
+
+/ Interests
+- tag (varchar(20))
+- tagID (unsigned mediumint)
+
+/ Interest_Bridge
+- tagID (unsigned mediumint) (not nullable)
+- productID (unsigned mediumint) (nullable)
+- userID (unsigned mediumint) (nullable)
+- sellerID (unsigned mediumint) (nullable)
+
+/ Ratings
+- productID (unsigned mediumint)
+- rating (tinyint(5))
+- userID (unsigned mediumint)
+- verifiedBuyer (bool)
 
 / Transactions
-- transactionID (Primary, Not Null, Automatic counting)
-- userID 
-- sellerID
-- productID
-- priceAmount
-- productName
-- date
+- transactionID (unsigned bigint)(Primary, Not Null, Automatic counting)
+- userID (unsigned mediumint)
+- sellerID (unsigned mediumint)
+- productID (unsigned mediumint)
+- priceAmount (decimal)
+- productName (varchar(20))
+- date (DATE)
 
 userID -> SellerID -> Products (list) -> ProductID (from list) -> ProductID
 
