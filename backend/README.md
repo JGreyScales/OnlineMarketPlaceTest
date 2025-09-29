@@ -3,6 +3,12 @@ MVC-style preplanning below
 # Package Requirements
 - JEST
 - SUPERTEST
+- bcrypt 
+- dotenv
+- express
+- multer
+- mysql
+- jsonwebtoken
 
 
 ## server.js
