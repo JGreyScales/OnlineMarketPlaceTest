@@ -1,5 +1,6 @@
-const {seller} = require("../controllers/sellerController")
-ALLOWED_FIELDS = ['login-cookie', 'userID']
+const {Seller} = require("../controllers/sellerController")
+const {authenticateToken} = require('../middleware/auth')
+ALLOWED_FIELDS = ['login-cookie', 'userID', 'storepageBio', 'storepagePhoto', 'storepageName']
 
 function validateGetSeller(req, res){
     Object.keys(req.body).forEach((key) => {
@@ -15,6 +16,11 @@ function validateGetSeller(req, res){
             res.status(401).end()
             return false
         }
+    }
+
+    if (!authenticateToken(res.body['userID'], res.body['login-cookie'])){
+        res.status(401).end()
+        return false
     }
     return true
 }
@@ -34,6 +40,16 @@ function validatePostSeller(req, res){
 
     if (senderUserID != targetSellerID){
         // senderID must equal sellerID
+        res.status(401).end()
+        return false
+    }
+
+    if (res.body['storepageBio'] && res.body['storepageBio'].length > Seller.MAX_SELLER_STORAGEPAGE_BIO_LENGTH){
+        res.status(401).end()
+        return false
+    }
+
+    if (res.body['storepageName'] && res.body['storepageName'].length > Seller.MAX_SELLER_STOREPAGE_NAME_LENGTH){
         res.status(401).end()
         return false
     }

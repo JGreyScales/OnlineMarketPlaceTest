@@ -1,4 +1,5 @@
 const {Transaction} = require('../controllers/Transactions/transactionClass')
+const {authenticateToken} = require('../middleware/auth')
 ALLOWED_FIELDS = ['login-cookie', 'userID'];
 // transactions can only be created from the backend side
 // users will never send an API request specifically to make a transaction
@@ -11,6 +12,11 @@ function validateGetTransaction(req, res) {
             return false
         }
     })
+
+    if (!authenticateToken(res.body['userID'], res.body['login-cookie'])){
+        res.status(401).end()
+        return false
+    }
 
     if (!req.params.transID && !req.params.userID && !req.params.sellerID && !req.params.productID){
         // if at least one does not exist its 
