@@ -12,6 +12,7 @@ router.post("/create", (req, res) => {
     res.sendStatus(201).end();
 });
 
+
 router.delete("/:productID", (req, res) => {
     res.sendStatus(202).end();
 });

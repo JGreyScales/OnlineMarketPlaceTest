@@ -6,7 +6,6 @@ const product = require("./routes/products");
 const express = require('express');
 const app = express();
 
-
 app.use(express.json()); // use json for incoming payloads
 
 app.use("/user", user);
