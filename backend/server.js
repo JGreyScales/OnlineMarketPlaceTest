@@ -3,6 +3,8 @@ const transaction = require("./routes/transactions");
 const seller = require("./routes/sellers");
 const product = require("./routes/products");
 
+require('dotenv').config(); // load the .env file into memory
+
 const express = require('express');
 const app = express();
 
