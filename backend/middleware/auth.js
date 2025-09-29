@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken')
 
-async function authenticateToken(req){
+function authenticateToken(req){
     // format "Bearer <token>"
     const token = req.header('Authorization')?.split(' ')[1];
 

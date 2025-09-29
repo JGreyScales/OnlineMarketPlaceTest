@@ -1,22 +1,24 @@
 const { User } = require("../controllers/userController");
+const {validateDeleteUser, validatePostUser, validateGetUser} = require('../validation/validateUser')
 
 const express = require('express');
 const router = express.Router();
 
+// doesnt use a middleware for password authentication
 router.get("/:userID/authenticate", (req, res) => {
+    
     res.send("BOOL");
 });
 
-router.get("/:userID", (req, res) => {
-    // if res.param.userID != res.body.userID, do not populate funds
-    res.send("USER OBJECT");
+router.get("/:userID", validateGetUser, (req, res) => {
+    return
 });
 
-router.delete("/:userID", (req, res) => {
+router.delete("/:userID", validateDeleteUser, (req, res) => {
     res.sendStatus(202).end();
 });
 
-router.post("/:userID", (req, res) => {
+router.post("/:userID", validatePostUser, (req, res) => {
     res.sendStatus(201).end();
 });
 

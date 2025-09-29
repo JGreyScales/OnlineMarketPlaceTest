@@ -1,89 +1,91 @@
 const {User} = require('../controllers/userController')
 const {authenticateToken} = require('../middleware/auth')
-const ALLOWED_FIELDS = ['login-cookie', 'userID', 'userPhoto', 'userBio', 'userName', 'email', 'password'];
+const ALLOWED_FIELDS = ['userID', 'userPhoto', 'userBio', 'userName', 'email', 'password'];
 
 
-function validateGetUser(req, res) {
-   Object.keys(req.body).forEach((key) => {
-        if (!ALLOWED_FIELDS.includes(key)) {
-            // invalid key is contained in the request
-            res.status(400).end()
-            return false
-        }
-    })
-
-    if (req.body['login-cookie'].length != User.MAX_PASSWORD_LENGTH){
-        // login-cookie is of invalid length
-        res.status(401).end()
-        return false
-    }
-
+function validateGetUser(req, res, next) {
     if (!authenticateToken(req)){
-        res.status(401).end()
-        return false
+        return res.status(401).json({error: 'Authentication Failed'})
     }
 
-    if (res.params.userID){
-        var userID = parseInt(res.params.userID)
+    if (req.body){
+        Object.keys(req.body).forEach((key) => {
+            if (!ALLOWED_FIELDS.includes(key)) {
+                // invalid key is contained in the request
+                return res.status(400).json({error: `Invalid field: ${key}`})
+            }
+        })
+    }
+
+    if (req.params.userID){
+        var userID = parseInt(req.params.userID)
         if ( isNaN(userID) || userID < 0){
             // param userID is not valid
-            res.status(401).end()
-            return false
+            return res.status(400).json({error: `Invalid userID`})
         }
     }
 
 
-    return true
+    next();
 }
 
-function validatePostUser(req, res) {
-    if (!validateGetUser(req, res)){
-        return false
-    }
+function validatePostUser(req, res, next) {
 
-    var senderUserID = parseInt(res.body['userID'])
-    var targetUserID = parseInt(res.params.userID) // we know this is not NaN from the getUser check
-    if (isNaN(senderUserID) || senderUserID < 0){
-        // senderUserID is not valid
-        res.status(401).end()
-        return false
-    }
+    validateGetUser(req, res, (err) => {
+        // forward any errors from getUser towards the next middleware
+        if (err) return res.status(err.status || 400).json(err)
 
-    if (senderUserID != targetUserID){
-        // target User must be same as sender User
-        res.status(401).end()
-        return false
-    }
+        if (!req.body){
+            return res.status(400).json({error: `No body present`})
+        }
 
-    if (res.body['email'] && res.body['email'].length > User.MAX_EMAIL_LENGTH){
-        // email is too long
-        res.status(401).end()
-        return false
-    }
+        if (!'userID' in req.body){
+            return res.status(400).json({error: `no senderID present`})    
+        }
 
-    if (res.body['password'] && res.body['password'].length > User.MAX_PASSWORD_LENGTH) {
-        // password is too long
-        res.status(401).end()
-        return false
-    }
+
+
+        var senderUserID = parseInt(req.body['userID'])
+        var targetUserID = parseInt(req.params.userID) // we know this is not NaN from the getUser check
+        if (isNaN(senderUserID) || senderUserID < 0){
+            // senderUserID is not valid
+            return res.status(400).json({error: 'Invalid senderUserID'})
+        }
     
-    if (res.body['userBio'] && res.body['userBio'].length > User.MAX_BIO_LENGTH){
-        res.status(401).end()
-        return false
-    }
-
-    if (res.body['userName'] && res.body['userName'].length > User.MAX_USERNAME_LENGTH){
-        res.status(401).end()
-        return false
-    }
-
-    return true
+        if (senderUserID != targetUserID){
+            // target User must be same as sender User
+            return res.status(401).json({error: `SenderID does not match targetID`})
+        }
+    
+        
+        if ('email' in req.body && req.body['email'].length > User.MAX_EMAIL_LENGTH){
+            // email is too long
+            return res.status(400).json({error: `Email is too long`})
+        }
+    
+        if ('password' in req.body && req.body['password'].length > User.MAX_PASSWORD_LENGTH) {
+            // password is too long
+            return res.status(400).json({error: `Password is too long`})
+        }
+        
+        if ('userBio' in req.body && req.body['userBio'].length > User.MAX_BIO_LENGTH){
+            return res.status(400).json({error: `UserBio is too long`})
+        }
+    
+        if ('userName' in req.body && req.body['userName'].length > User.MAX_USERNAME_LENGTH){
+            return res.status(400).json({error: `UserName is too long`})
+        }
+    
+       next()
+    })
 }
 
-function validateDeleteUser(req, res) {
-    if (!validatePostUser(req, res)){
-        return false
-    }
+function validateDeleteUser(req, res, next) {
+  validatePostUser(req, res, (err) => {
+    if (err) return res.status(err.status || 400).json(err)
 
-    return true
+        next()
+    })
 }
+
+module.exports = {validateDeleteUser, validatePostUser, validateGetUser}

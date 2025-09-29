@@ -1,64 +1,68 @@
 const {Seller} = require("../controllers/sellerController")
 const {authenticateToken} = require('../middleware/auth')
-ALLOWED_FIELDS = ['login-cookie', 'userID', 'storepageBio', 'storepagePhoto', 'storepageName']
+ALLOWED_FIELDS = ['userID', 'storepageBio', 'storepagePhoto', 'storepageName']
 
-function validateGetSeller(req, res){
-    Object.keys(req.body).forEach((key) => {
-        if (!ALLOWED_FIELDS.includes(key)){
-            res.status(400).end()
-            return false
-        }
-    })
-    
+function validateGetSeller(req, res, next){
+    if (!authenticateToken(req)){
+        return res.status(401).json({error: 'Authenticaton Failed'})
+    }
+
+    if (req.body){
+        Object.keys(req.body).forEach((key) => {
+            if (!ALLOWED_FIELDS.includes(key)){
+                return res.status(400).json({error: `Invalid field: ${key}`})
+            }
+        })
+    }
+
     if (req.params.sellerID){
         var sellerID = parseInt(req.params.sellerID)
         if (isNaN(sellerID) || sellerID < 0){
-            res.status(401).end()
-            return false
+            res.status(400).json({error: `Invalid sellerID`})
         }
     }
 
-    if (!authenticateToken(req)){
-        res.status(401).end()
-        return false
-    }
-    return true
+    next();
 }
 
 function validatePostSeller(req, res){
-    if (!validateGetSeller(req, res)){
-        return false
-    }
+    validateGetSeller(req, res, (err) => {
+        if (err) return res.status(err.status || 400).json(err)
 
-    var senderUserID = parseInt(res.body['userID'])
-    var targetSellerID = parseInt(res.params.sellerID) // we know this is not NaN from the getSeller check
-    if (isNaN(senderUserID) || senderUserID < 0){
-        // senderUserID is not valid
-        res.status(401).end()
-        return false
-    }
+        if (!req.body){
+            return res.status(400).json({error: `No body present`})
+        }
 
-    if (senderUserID != targetSellerID){
-        // senderID must equal sellerID
-        res.status(401).end()
-        return false
-    }
-
-    if (res.body['storepageBio'] && res.body['storepageBio'].length > Seller.MAX_SELLER_STORAGEPAGE_BIO_LENGTH){
-        res.status(401).end()
-        return false
-    }
-
-    if (res.body['storepageName'] && res.body['storepageName'].length > Seller.MAX_SELLER_STOREPAGE_NAME_LENGTH){
-        res.status(401).end()
-        return false
-    }
-
-    return true
+        if (!'userID' in req.body){
+            return res.status(400).json({error: `No senderID present`})
+        }
+        
+        var senderUserID = parseInt(req.body['userID'])
+        var targetSellerID = parseInt(req.params.sellerID) // we know this is not NaN from the getSeller check
+        if (isNaN(senderUserID) || senderUserID < 0){
+            // senderUserID is not valid
+            return res.status(400).json({error: `senderID is not present`})
+        }
+    
+        if (senderUserID != targetSellerID){
+            // senderID must equal sellerID
+            return res.status(401).json({error: `SenderID does not match targetID`})
+        }
+    
+        if ('storepageBio' in req.body && req.body['storepageBio'].length > Seller.MAX_SELLER_STORAGEPAGE_BIO_LENGTH){
+            return res.status(400).json({error: `storepageBio is too long`})
+        }
+    
+        if ('storepageName' in req.body && req.body['storepageName'].length > Seller.MAX_SELLER_STOREPAGE_NAME_LENGTH){
+            return res.status(400).json({error: `storagepageName is too long`})
+        }
+    
+        next();
+    })
 }
 
-function validateDeleteSeller(req, res){
-    if (!validatePostSeller(req, res)){
-        return false
-    }
+function validateDeleteSeller(req, res, next){
+    validatePostSeller(req, res, (err) => {
+        if (err) return res.status(err.status || 400).json(err)
+    })
 }
