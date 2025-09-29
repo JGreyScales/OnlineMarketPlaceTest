@@ -18,7 +18,7 @@ function validateGetUser(req, res) {
         return false
     }
 
-    if (!authenticateToken(res.body['userID'], res.body['login-cookie'])){
+    if (!authenticateToken(req)){
         res.status(401).end()
         return false
     }

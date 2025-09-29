@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken')
 
-function authenticateToken(req){
+async function authenticateToken(req){
     // format "Bearer <token>"
     const token = req.header('Authorization')?.split(' ')[1];
 
@@ -28,4 +28,4 @@ function generateToken(userID) {
 }
 
 
-modules.export = {authenticateToken, generateToken}
+module.exports = {authenticateToken, generateToken}
