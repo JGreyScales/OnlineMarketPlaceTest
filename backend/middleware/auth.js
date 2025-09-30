@@ -39,7 +39,7 @@ function authenticateToken(req) {
 
 function getUserIDFromToken(req){
     jwt.verify(token, process.env.JWT_SECRET, (err, payload) => {
-        if (err) return 0;
+        if (err) return NaN;
         return payload.userID;
     })
 }

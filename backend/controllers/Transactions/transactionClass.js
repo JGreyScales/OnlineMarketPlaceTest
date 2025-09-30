@@ -68,7 +68,7 @@ class Transaction {
             await this.populateSellerName();
             await this.populateUserName();
         } catch (error) {
-            console.log("Error populating fields:", error);
+            console.log(`Error populating fields: ${error}`);
         }
     }
 

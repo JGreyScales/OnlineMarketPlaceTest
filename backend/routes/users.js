@@ -110,7 +110,6 @@ router.put("/create", validatePutUser, async (req, res) => {
     } catch (error) {
         return res.status(400).send(error.message)
     }
-
 });
 
 module.exports = router;

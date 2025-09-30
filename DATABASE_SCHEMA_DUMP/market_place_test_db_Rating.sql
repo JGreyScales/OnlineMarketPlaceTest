@@ -13,15 +13,15 @@
 -- Table structure for table `Ratings`
 --
 
-DROP TABLE IF EXISTS `Ratings`;
+DROP TABLE IF EXISTS `Rating`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `Ratings` (
+CREATE TABLE `Rating` (
   `productID` mediumint unsigned NOT NULL,
   `rating` tinyint NOT NULL,
   `userID` mediumint unsigned NOT NULL,
   `verifiedBuyer` tinyint(1) DEFAULT '0',
-  PRIMARY KEY (`productID`)
+  PRIMARY KEY (`productID`,`userID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='All user ratings for various products';
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;

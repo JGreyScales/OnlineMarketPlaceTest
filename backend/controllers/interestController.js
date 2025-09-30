@@ -11,6 +11,33 @@ class Interest {
         this.#tagID = tagID
     }
 
+    async tagIDsToNames(tagIDList) {
+        try {
+            let query = "SELECT tag FROM Interest WHERE tagID = ?";
+            let promises = tagIDList.map(tagID => {
+                return new Promise((resolveQuery, rejectQuery) => {
+                    connection.query(query, [tagID], (err, results) => {
+                        if (err) {
+                            rejectQuery(err); // Reject if there's an error
+                        } else if (results.length === 0) {
+                            resolveQuery(); // Skip if no results
+                        } else {
+                            resolveQuery(results[0].tag); // Return the tag name
+                        }
+                    });
+                });
+            });
+    
+            // Wait for all queries to finish
+            const tags = await Promise.all(promises);
+            return tags.filter(tag => tag !== undefined);  // Remove any undefined values (no tag found)
+        } catch (error) {
+            console.error("Error retrieving tag names:", error);
+            throw error;  // Re-throw the error for the calling function to handle
+        }
+    }
+    
+
     delinkTag(tagID, targetID, targetColumn) {
         return new Promise((resolve, reject) => {
             let query = `DELETE FROM Interest_bridge WHERE tagID = ? AND  ${targetColumn} = ?`
@@ -65,7 +92,7 @@ class Interest {
                 if (err) return reject({statusCode: 400, message: `Database query error:${err.sqlMessage}`});
                 if (results.length === 0) return resolve({statusCode: 404, data: []});
 
-                resolve(results.map({statusCode: 200, data: row => row[column]}))
+                resolve({statusCode: 200, data: results.map(row => row[column])})
             })
         })
     }
