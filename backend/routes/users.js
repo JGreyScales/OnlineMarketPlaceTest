@@ -1,3 +1,4 @@
+const { isNumeric } = require("validator");
 const { User, } = require("../controllers/userController");
 const {validateDeleteUser, validatePostUser, validateGetUser, validatePutUser} = require('../validation/validateUser')
 
@@ -61,10 +62,29 @@ router.delete("/:userID", validateDeleteUser, async (req, res) => {
 
 router.patch("/:userID", validatePostUser, async (req, res) => {
     // body has 1..* user properties
+    if (req.body.userFundsAmount) {
+        return res.status(401).send("Not allowed to modify funds like this")
+    }
     const userObj = new User();
     userObj.setUserID(req.params.userID)
     try {
         const result = await userObj.updateUser(req.body)
+        return res.status(result.statusCode).json(result)
+    } catch (error) {
+        return res.status(400).send(error.message)
+    }
+});
+
+router.patch("/:userID/fund", validatePostUser, async (req, res) => {
+    // body has fundsAmount
+    const userObj = new User();
+    userObj.setUserID(req.params.userID)
+    if (!req.body.fundsAmount){
+        return res.status(400).send('fundsAmount must be present')
+    }
+
+    try {
+        const result = await userObj.updateFunds(parseFloat(req.body.fundsAmount))
         return res.status(result.statusCode).json(result)
     } catch (error) {
         return res.status(400).send(error.message)

@@ -24,6 +24,10 @@ class User {
         this.#userID = userID
     }
 
+    setFunds(funds){
+        this.#funds = funds
+    }
+
     authenticateUser(email, password) {
         return new Promise((resolve, reject) => {
             let query = 'SELECT passwordHash, userID FROM User WHERE email = ?'
@@ -139,6 +143,21 @@ class User {
             })
         })
     }
+
+    updateFunds(newFunds){
+        return new Promise((resolve, reject) => {
+            let query = "UPDATE User SET userFundsAmount = userFundsAmount + ? WHERE userID = ?"
+            connection.query(query, [newFunds, this.#userID], (err, results) => {
+                if (err){
+                    console.log(err)
+                    return reject({statusCode: 400, message: `Database query error: ${err.sqlMessage}`})
+                }
+                return resolve({statusCode: 202, message: 'Entry updated'})
+            })
+        })
+    }
+
+
 
     createUser(email, password){
         return new Promise((resolve, reject) => {

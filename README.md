@@ -28,7 +28,8 @@ A simple project to occupy time.
     - [ ] must use JEST for react-native testing
     - [ ] JEST and SuperTest for Node.JS testing
 
-
+# Known Issues
+- I cant really protect the payment portal from fraud, Ideally I would want to use something like Stripe to offset all that responsability so I dont even need to really handle the users wallet at all. But this is just a demo project so please ignore this oversight
 
 
 
