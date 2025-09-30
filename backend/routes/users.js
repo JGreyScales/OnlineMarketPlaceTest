@@ -1,57 +1,74 @@
-const { User } = require("../controllers/userController");
-const {validateDeleteUser, validatePostUser, validateGetUser} = require('../validation/validateUser')
-const {generateToken} = require('../middleware/auth')
-const connection = require("../models/db")
-const bcrypt = require("bcrypt")
+const { User, } = require("../controllers/userController");
+const {validateDeleteUser, validatePostUser, validateGetUser, validatePutUser} = require('../validation/validateUser')
 
 const express = require('express');
 const router = express.Router();
 
 // doesnt use a middleware for password authentication
-router.post("/authenticate", (req, res) => {
+router.post("/authenticate", async (req, res) => {
     // body has [email, password]
-    // hardcoded fact checking
-    if (!req.body || !req.body.email || !req.body.password){
-        return res.status(400).json({error: `Malformed data`})
+    if (!req.body || !req.body.email || !req.body.password) {
+        return res.status(400).json({error: 'Malformed data'});
     }
 
-    let query = 'SELECT passwordHash, userID FROM User WHERE email = ?'
-
-    connection.query(query, [req.body['email']], (err, results) => {
-        if (err) {
-            console.error(err.message)
-            return res.status(500).json({error: `Database query error`})
-        }
-
-        if (results.length === 0) {
-            return res.status(404).json({error: `User not found`})
-        }
-
-        const {passwordHash, userID} = results[0];
-        bcrypt.compare(req.body['password'], passwordHash, (err, isMatch) => {
-            if (err) {
-                return res.status(400).json({error: `Error checking password`})
-            }
-
-            if (isMatch) {
-                return res.status(200).json({Authorization: `Bearer ${generateToken(userID)}`})
-            } else {
-                return res.status(401).json({error: `Invalid login`})
-            }
-        })
-    })
+    const userOBJ = new User();
+    try {
+        const result = await userOBJ.authenticateUser(req.body.email, req.body.password);
+        return res.status(result.statusCode).json(result);
+    } catch (error) {
+        return res.status(400).send(error.message);
+    }
 });
 
-router.get("/:userID", validateGetUser, (req, res) => {
-    return
+
+
+router.get("/:userID", validateGetUser, async (req, res) => {
+    // body has None
+    const userObj = new User();
+    userObj.setUserID(req.params.userID)
+    try {
+        const result = await userObj.getUserDetails()
+        return res.status(result.statusCode).json(result)
+    } catch (error) {
+        return res.status(400).send(error.message)
+    }
 });
 
-router.delete("/:userID", validateDeleteUser, (req, res) => {
-    res.sendStatus(202).end();
+router.delete("/:userID", validateDeleteUser, async (req, res) => {
+    // body has None
+    const userObj = new User();
+    userObj.setUserID(req.params.userID)
+    try {
+        const result = await userObj.deleteUser()
+        return res.status(result.statusCode).json(result)
+    } catch (error) {
+        console.log(error)
+        return res.status(400).send(error.message)
+    }
 });
 
-router.post("/:userID", validatePostUser, (req, res) => {
-    res.sendStatus(201).end();
+router.patch("/:userID", validatePostUser, async (req, res) => {
+    // body has 1..* user properties
+    const userObj = new User();
+    userObj.setUserID(req.params.userID)
+    try {
+        const result = await userObj.updateUser(req.body)
+        return res.status(result.statusCode).json(result)
+    } catch (error) {
+        return res.status(400).send(error.message)
+    }
+});
+
+router.put("/create", validatePutUser, async (req, res) => {
+    // body has [email, password]
+    const userObj = new User();
+    try {
+        const result = await userObj.createUser(req.body.email, req.body.password)
+        return res.status(result.statusCode).json(result)
+    } catch (error) {
+        return res.status(400).send(error.message)
+    }
+
 });
 
 module.exports = router;

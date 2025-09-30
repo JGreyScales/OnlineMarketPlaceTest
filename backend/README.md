@@ -9,6 +9,7 @@ MVC-style preplanning below
 - multer
 - mysql
 - jsonwebtoken
+- validator
 
 
 ## server.js

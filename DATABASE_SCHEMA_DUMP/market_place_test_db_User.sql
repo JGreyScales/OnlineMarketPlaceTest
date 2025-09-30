@@ -18,7 +18,7 @@ DROP TABLE IF EXISTS `User`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `User` (
   `userID` mediumint unsigned NOT NULL AUTO_INCREMENT,
-  `email` varchar(40) NOT NULL,
+  `email` varchar(40) NOT NULL, /* is an invisible unique value */
   `passwordHash` varchar(256) NOT NULL,
   `userFundsAmount` decimal(10,2) NOT NULL DEFAULT '0',
   `userPhoto` longblob NOT NULL,
