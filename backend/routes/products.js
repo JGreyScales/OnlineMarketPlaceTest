@@ -1,11 +1,18 @@
-const { Product } = require("../controllers/Product/productController");
+const { ProductList } = require("../controllers/Product/product");
 const db = require('../models/db')
 
 const express = require("express");
 const router = express.Router();
 
-router.get("/:productID", (req, res) => {
-    res.send("PRODUCT OBJECT");
+router.get("/:productID", async (req, res) => {
+    const productListOBJ = new ProductList()
+    try {
+        const result = await productListOBJ.getProduct(req.params.productID)
+        return res.status(result.statusCode).json(result)
+    } catch (error) {
+        console.log(error)
+        return res.status(400).send(error.message)
+    }
 });
 
 router.post("/create", (req, res) => {

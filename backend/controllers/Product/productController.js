@@ -1,5 +1,4 @@
 const connection = require("../../models/db")
-const {Interest} = require("../interestController")
 
 class Product {
     #productID;
@@ -56,29 +55,16 @@ class Product {
         })
     }
 
-    async populateInterestTags() {
-        try {
-            let query = "SELECT tagID FROM Interest_bridge WHERE productID = ?";
-            const InterestOBJ = new Interest();
-            const results = await new Promise((resolve, reject) => {
-                connection.query(query, [this.#productID], (err, results) => {
-                    if (err) return reject(err);
-                    resolve(results);
-                });
-            });
-    
-            if (results.length === 0) {
-                console.log('No tags found for this product.');
-                return [];
-            }
-    
-            const tagNames = await InterestOBJ.tagIDsToNames(results.map(tag => tag.tagID));
-            this.#interestTags = tagNames;
-            return tagNames;
-        } catch (error) {
-            console.error("Error populating interest tags:", error);
-            throw error;  // Re-throw the error for the calling function to handle
-        }
+    populateInterestTags(){
+        return new Promise((resolve, reject) => {
+            let query = " SELECT i.tag FROM Interest_bridge ib JOIN Interest i ON ib.tagID = i.tagID WHERE ib.productID = ?"
+            connection.query(query, [this.#productID], (err, results) => {
+                if (err) return reject(err);
+                if (results.length === 0) return resolve([]);
+                this.#interestTags = results.map(interest => interest.tag)
+                resolve()
+            })
+        })
     }
 
     async populateAll(){
