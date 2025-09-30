@@ -1,4 +1,6 @@
 const jwt = require('jsonwebtoken')
+const {Product} = require('../controllers/Product/productController')
+
 
 function authenticateToken(req) {
     return new Promise((resolve, reject) => {
@@ -31,6 +33,28 @@ function authenticateToken(req) {
                 }
             }
 
+            if (req.params.sellerID) {
+                if (payload.userID !== parseInt(req.params.sellerID)){
+                    if (req.method === 'GET' && (req.route.path === '/store/:sellerID' || req.route.path === '/:sellerID/products')) {
+                        return resolve(true)
+                    }
+
+                    console.log('Failed on seller object permission checking')
+                    return resolve(false)
+                }
+            }
+
+            if (req.params.productID) {
+                const sellerID = Product.getSellerID(req.params.productID)
+                if (payload.userID !== sellerID) {
+                    if (req.method === 'GET' && req.route.path === '/:productID'){
+                        return resolve(true)
+                    }
+                    console.log('Failed on productSeller object permission checking')
+                    return resolve(false)
+                }
+            }
+
 
             return resolve(true); // Authentication successful
         });
@@ -53,4 +77,4 @@ function generateToken(userID) {
 }
 
 
-module.exports = {authenticateToken, generateToken}
+module.exports = {authenticateToken, generateToken, getUserIDFromToken}

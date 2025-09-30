@@ -1,67 +1,79 @@
+const { isFloat, isInt } = require('validator');
 const {Product} = require('../controllers/Product/productController')
 const {authenticateToken} = require('../middleware/auth')
-ALLOWED_FIELDS = ['userID', 'productName', 'productBio', 'productPrice', 'rating']
+ALLOWED_FIELDS = ['productName', 'productImage', 'productBio', 'productPrice', 'rating']
 
-function validateGetProduct(req, res, next){
-    if (!authenticateToken(req)){
-        res.status(401).json({error: 'Authentication Failed'})
+async function validateGetProduct(req, res, next){
+    const isAuthenticated = await authenticateToken(req)
+    if (!isAuthenticated) {
+        return res.status(401).json({ error: 'Authentication Failed' });
     }
 
-    if (req.body){
-        Object.keys(req.body).forEach((key) => {
-            if (!ALLOWED_FIELDS.includes(key)) {
-                return res.status(400).json({error: `Invalid field: ${key}`})
+   if (req.params.productID){
+    if (isNaN(req.params.productID) || req.params.productID < 1){
+        return res.status(400).json({error: `Invalid productID`})
+    }
+   }
+
+    next()
+}
+
+async function validatePostProduct(req, res, next){
+    try {
+        await validateGetProduct(req, res, (err) => {
+            if (err) return res.status(err.status || 400).json(err);
+
+            if (req.body){
+                Object.keys(req.body).forEach((key) => {
+                    if (!ALLOWED_FIELDS.includes(key)) {
+                        // invalid key is contained in the request
+                        return res.status(400).json({error: `Invalid field: ${key}`})
+                    }
+                })
+            } else {
+                return res.status(400).json({error: `No body present`})
             }
+
+            if (req.body.productName) {
+                if (isNaN(req.body.productName) || req.body.productName.length < Product.MIN_PRODUCT_NAME_LENGTH || req.body.productName.length > Product.MAX_PRODUCT_NAME_LENGTH) {
+                    return res.status(400).json({error: `Invalid productName`})
+                }
+            }
+
+            if (req.body.productBio){
+                if (isNaN(req.body.productBio) || req.body.productBio.length < Product.MIN_PRODUCT_BIO_LENGTH || req.body.productBio.length > Product.MAX_PRODUCT_BIO_LENGTH) {
+                    return res.status(400).json({error: `Invalid productBio`})
+                }
+            }
+
+            if (req.body.productPrice){
+                if (!isFloat(req.body.productPrice) || parseFloat(req.body.productPrice) < Product.MIN_PRODUCT_PRICE) {
+                    return res.status(400).json({error: `Invalid productPrice`})
+                }
+            }
+
+            if (req.body.rating){
+                if (!isInt(req.body.rating) || parseInt(req.body.rating) < Product.MIN_RATING_VALUE || parseInt(req.body.rating) > Product.MAX_RATING_VALUE){
+                    return res.status(400).json({error: `Invalid rating`})
+                }
+            }
+
+            next()
         })
+    } catch (error) {
+        return res.status(400).json(error.message)
     }
+}
 
-
-    if (req.params.productID){
-        var productID = parseInt(req.params.productID)
-        if (isNaN(productID) || productID < 0){
-            res.status(400).json({error: `Invalid productID`})
-        }
-    }
-
-
+async function validateDeleteProduct(req, res, next){
+   try {
+       await validatePostProduct(req, res, (err) => {
+        if (err) return res.status(err.status || 400).json(err);
+    })
+   } catch (error) {
+    return res.status(400).json(error.message)
+   }
     next()
 }
 
-function validatePostProduct(req, res, next){
-    validateGetProduct(req, res, (err) => {
-        if (err) return res.status(err.status || 400).json(err)
-
-
-        if (req.bos.productName && req.body['productName'].length > Product.MAX_PRODUCT_NAME_LENGTH){
-            return res.status(400).json({error: `productName too long`})
-        }
-    
-        if (req.body.productBio && req.body['productBio'].length > Product.MAX_PRODUCT_BIO_LENGTH){
-            return res.status(400).json({error: `productBio too long`})
-        }
-    
-        if (req.body.productPrice){
-            var productPrice = parseInt(req.body['productPrice'])
-            if (isNaN(productPrice) || productPrice < 0){
-                return res.status(400).json({error: `productPrice is invalid`})
-            }
-        }
-    
-        if (req.body.rating){
-            var rating = parseInt(req.body['rating'])
-            if (isNaN(rating) || rating < Product.MIN_RATING_VALUE || rating > Product.MAX_RATING_VALUE){
-                res.status(400).json({error: `rating is invalid`})
-            }
-        }
-    
-        next();
-    })
-}
-
-function validateDeleteProduct(req, res, next){
-    validatePostProduct(req, res, (err) => {
-        if (err) return res.status(err.status || 400).json(err)
-    })
-
-    next()
-}
+module.exports = {validateDeleteProduct, validatePostProduct, validateGetProduct}

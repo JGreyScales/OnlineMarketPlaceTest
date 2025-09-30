@@ -14,7 +14,9 @@ class Product {
     #interestTags = [];
     MIN_PRODUCT_PRICE = 0.00;
     MAX_PRODUCT_NAME_LENGTH = 20;
+    MIN_PRODUCT_NAME_LENGTH = 3;
     MAX_PRODUCT_BIO_LENGTH = 1000;
+    MIN_PRODUCT_BIO_LENGTH = 50;
     MIN_RATING_VALUE = 1;
     MAX_RATING_VALUE = 5;
 
@@ -27,6 +29,15 @@ class Product {
         this.#productPrice = productPrice
         this.#updatedAt = updatedAt
         this.#createdAt = createdAt
+    }
+
+    static getSellerID(productID) {
+        let query = "SELECT sellerID FROM Product WHERE productID = ?"
+        connection.query(query, [parseInt(productID)], (err, results) => {
+            if (err) return 0
+            if (results.length === 0) return 0
+            return parseInt(results[0].sellerID)
+        })
     }
 
 

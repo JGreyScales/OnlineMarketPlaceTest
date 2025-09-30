@@ -23,7 +23,7 @@ class Interest {
 
     linkTag(valueDict) {
         return new Promise((resolve, reject) => {
-            let query = "INSERT INTO Interest_bridge (";
+            const query = "INSERT INTO Interest_bridge (";
             const columnNameList = [];
             const valuesList = [];
     

@@ -27,7 +27,6 @@ class User {
             connection.query(query, [email], (err, results) => {
                 
                 if (err) {
-                    console.log(err)
                     return reject({statusCode: 500, message: `Database query error: ${err.sqlMessage}`});
                 }
 
@@ -57,7 +56,6 @@ class User {
             connection.query(query, [this.#userID], (err, results) => {
                 
                 if (err) {
-                    console.log(err)
                     return reject({statusCode: 400, message: `Database query error: ${err.sqlMessage}`})
                 }
 
@@ -77,7 +75,6 @@ class User {
             let query = "SELECT userFundsAmount FROM User WHERE userID = ?"
             connection.query(query, [this.#userID], (err, results) => {
                 if (err) {
-                    console.log(err)
                     return reject({statusCode: 400, message: `Database query error: ${err.sqlMessage}`})
                 }
 
@@ -108,7 +105,6 @@ class User {
             connection.query(query, [this.#userID], (err, results) => {
                 
                 if (err) {
-                    console.log(err)
                     return reject({statusCode: 400, message: `Database query error: ${err.sqlMessage}`})
                 }
                 return resolve({statusCode: 202, message: 'Entry queued for removal'})
@@ -116,19 +112,19 @@ class User {
         })
     }
 
-    updateUser(values){
+    updateUser(valuesDict){
         return new Promise((resolve, reject) => {
-            let query = "UPDATE User SET "
+            const query = "UPDATE User SET "
             const updates = []
             const valuesList = []
 
-            for (let field in values){
+            for (let field in valuesDict){
                 if (field == 'password'){
                     updates.push("passwordHash = ?")
-                    valuesList.push(bcrypt.hashSync(values[field], SALT_ROUNDS))
+                    valuesList.push(bcrypt.hashSync(valuesDict[field], SALT_ROUNDS))
                 } else {
                     updates.push(`${field} = ?`)
-                    valuesList.push(values[field])
+                    valuesList.push(valuesDict[field])
                 }
 
             }
@@ -136,9 +132,7 @@ class User {
             query += updates.join(', ') + " WHERE userID = ?"
             valuesList.push(this.#userID)
             connection.query(query, valuesList, (err, results) => {
-                
                 if (err) {
-                    console.log(err)
                     return reject({statusCode: 400, message: `Database query error: ${err.sqlMessage}`})
                 }
 
@@ -152,7 +146,6 @@ class User {
             let query = "UPDATE User SET userFundsAmount = userFundsAmount + ? WHERE userID = ?"
             connection.query(query, [newFunds, this.#userID], (err, results) => {
                 if (err){
-                    console.log(err)
                     return reject({statusCode: 400, message: `Database query error: ${err.sqlMessage}`})
                 }
                 return resolve({statusCode: 202, message: 'Entry updated'})
@@ -173,7 +166,6 @@ class User {
                 connection.query(query, [email, hash], (err, results) => {
                     
                     if (err) {
-                        console.log(err)
                         return reject({statusCode: 400, message: `Database query error: ${err.sqlMessage}`})
                     }
     
