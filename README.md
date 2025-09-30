@@ -8,7 +8,7 @@ A simple project to occupy time.
     - [x] user must be denied if authentication fails
     - [x] must allow user to delete an account
     - [x] must allow user to modify an account
-    - [ ] must allow users to view their purchase history
+    - [x] must allow users to view their purchase history
 - [ ] must allow seller to post a product
     - [ ] must allow seller to set a location
     - [ ] must allow seller to set a price
