@@ -34,6 +34,18 @@ router.get("/:userID", validateGetUser, async (req, res) => {
     }
 });
 
+router.get("/:userID/funds", validateGetUser, async (req, res) => {
+    // body has None
+    const userObj = new User();
+    userObj.setUserID(req.params.userID)
+    try {
+        const result = await userObj.getUserDetails()
+        return res.status(result.statusCode).json(result)
+    } catch (error) {
+        return res.status(400).send(error.message)
+    }
+});
+
 router.delete("/:userID", validateDeleteUser, async (req, res) => {
     // body has None
     const userObj = new User();

@@ -15,10 +15,22 @@ function authenticateToken(req) {
                 console.log(`failed on ${err}`)
                 return resolve(false); // Invalid token, reject
             }
-            if (req.params.userID && (payload['userID'] != req.params.userID)){
-                console.log('failed on payload checking')
-                return resolve(false);
+
+            // Check if `userID` exists in request params
+            if (req.params.userID) {
+                // If userID exists in params, check if the payload's userID matches the request's userID
+                if (payload.userID !== parseInt(req.params.userID)) {
+                    // If method is GET and the route path is exactly '/:userID', skip this check
+                    if (req.method === 'GET' && req.route.path === '/:userID') {
+                        return resolve(true)
+                    }
+
+                    // If userIDs do not match and we are not in the default GET route, return false
+                    console.log('failed on payload checking');
+                    return resolve(false);
+                }
             }
+
 
             return resolve(true); // Authentication successful
         });

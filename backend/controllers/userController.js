@@ -76,6 +76,10 @@ class User {
         })
     }
 
+    getUserFunds(){
+
+    }
+
     deleteUser(){
         return new Promise((resolve, reject) => {
             let query = "DELETE FROM User WHERE userID = ?"
