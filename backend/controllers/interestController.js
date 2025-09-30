@@ -69,6 +69,14 @@ class Interest {
             })
         })
     }
+
+    getTag(){
+        return this.#tag
+    }
+
+    getTagID(){
+        return this.#tagID
+    }
 }
 
 

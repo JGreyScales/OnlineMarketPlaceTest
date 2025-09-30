@@ -92,7 +92,14 @@ class User {
     }
 
     getUserInterests(){
-        
+        return new Promise((resolve, reject) => {
+            let query = "SELECT tagID FROM Interest_bridge WHERE userID = ?"
+            connection.query(query, [this.#userID], (err, results) => {
+                if (err) reject({statusCode: 400, message: `Database query error: ${err.sqlMessage}`});
+                if (results.length === 0) reject({statusCode: 404, message: 'No record found'});
+                resolve({statusCode: 200, data: results.map(interest => interest.tagID)})
+            })
+        })
     }
 
     deleteUser(){
