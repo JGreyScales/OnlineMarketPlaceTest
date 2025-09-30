@@ -1,4 +1,3 @@
-const { isNumeric } = require("validator");
 const { User, } = require("../controllers/userController");
 const {validateDeleteUser, validatePostUser, validateGetUser, validatePutUser} = require('../validation/validateUser')
 
@@ -46,6 +45,10 @@ router.get("/:userID/funds", validateGetUser, async (req, res) => {
         return res.status(400).send(error.message)
     }
 });
+
+router.get("/:userID/interestList", validateGetUser, async (req, res) => {
+    
+})
 
 router.delete("/:userID", validateDeleteUser, async (req, res) => {
     // body has None

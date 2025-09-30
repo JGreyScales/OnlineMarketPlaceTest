@@ -18,14 +18,15 @@ DROP TABLE IF EXISTS `User`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `User` (
   `userID` mediumint unsigned NOT NULL AUTO_INCREMENT,
-  `email` varchar(40) NOT NULL, /* is an invisible unique value */
+  `email` varchar(40) NOT NULL,
   `passwordHash` varchar(256) NOT NULL,
-  `userFundsAmount` decimal(10,2) NOT NULL DEFAULT '0',
-  `userPhoto` longblob NOT NULL,
+  `userFundsAmount` decimal(10,2) NOT NULL DEFAULT '0.00',
+  `userPhoto` longblob,
   `userBio` varchar(250) DEFAULT 'my bio',
   `userName` varchar(20) DEFAULT 'user',
-  PRIMARY KEY (`userID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='Stores the user data inlcuding login information';
+  PRIMARY KEY (`userID`),
+  UNIQUE KEY `email_UNIQUE` (`email`) /*!80000 INVISIBLE */
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='Stores the user data inlcuding login information';
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 

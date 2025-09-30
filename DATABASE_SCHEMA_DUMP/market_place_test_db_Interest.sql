@@ -13,14 +13,15 @@
 -- Table structure for table `Interests`
 --
 
-DROP TABLE IF EXISTS `Interests`;
+DROP TABLE IF EXISTS `Interest`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `Interests` (
-  `tag` varchar(20) NOT NULL,
+CREATE TABLE `Interest` (
+  `tag` varchar(20) NOT NULL COMMENT 'lowercase type casting',
   `tagID` mediumint unsigned NOT NULL AUTO_INCREMENT,
-  PRIMARY KEY (`tagID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='The list of interests';
+  PRIMARY KEY (`tagID`),
+  UNIQUE KEY `tag_UNIQUE` (`tag`) /*!80000 INVISIBLE */
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci PACK_KEYS=1 COMMENT='The list of interests';
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 

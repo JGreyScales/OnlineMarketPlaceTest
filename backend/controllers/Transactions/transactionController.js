@@ -40,7 +40,6 @@ class TransactionList {
                     });
                 }
 
-                console.log(this.#transactions);
                 return resolve({ statusCode: 200, transactionList: this.#transactions });
             });
         });

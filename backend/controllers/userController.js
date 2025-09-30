@@ -5,9 +5,7 @@ const SALT_ROUNDS = 14;
 
 class User {
     #userID
-    #funds
     #interests
-    #cart
     MAX_EMAIL_LENGTH = 40;
     MAX_PASSWORD_LENGTH = 256;
     MAX_BIO_LENGTH = 250;
@@ -15,17 +13,11 @@ class User {
 
     constructor() {
         this.#userID = 0
-        this.#funds = 0.00
         this.#interests = {}
-        this.#cart = []
     }
 
     setUserID(userID){
         this.#userID = userID
-    }
-
-    setFunds(funds){
-        this.#funds = funds
     }
 
     authenticateUser(email, password) {
@@ -97,6 +89,10 @@ class User {
                 return resolve({statusCode: 200, userFundsAmount: userFundsAmount})
             })
         })
+    }
+
+    getUserInterests(){
+        
     }
 
     deleteUser(){

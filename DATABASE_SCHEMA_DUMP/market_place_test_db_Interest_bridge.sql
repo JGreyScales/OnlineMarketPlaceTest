@@ -17,11 +17,11 @@ DROP TABLE IF EXISTS `Interest_bridge`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `Interest_bridge` (
-  `tagID` mediumint unsigned NOT NULL,
-  `productID` mediumint unsigned DEFAULT NULL,
-  `userID` mediumint unsigned DEFAULT NULL,
-  `sellerID` mediumint unsigned DEFAULT NULL,
-  PRIMARY KEY (`tagID`)
+  `tagID` mediumint unsigned NOT NULL DEFAULT '0',
+  `productID` mediumint unsigned NOT NULL DEFAULT '0',
+  `userID` mediumint unsigned NOT NULL DEFAULT '0',
+  `sellerID` mediumint unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`tagID`,`userID`,`productID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='A bridge between products, users, sellers, and interests';
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
