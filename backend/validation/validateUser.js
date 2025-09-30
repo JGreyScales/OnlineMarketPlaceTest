@@ -39,7 +39,7 @@ function validatePostUser(req, res, next) {
             return res.status(400).json({error: `No body present`})
         }
 
-        if (!'userID' in req.body){
+        if (!req.body.userID){
             return res.status(400).json({error: `no senderID present`})    
         }
 
@@ -58,21 +58,21 @@ function validatePostUser(req, res, next) {
         }
     
         
-        if ('email' in req.body && req.body['email'].length > User.MAX_EMAIL_LENGTH){
+        if (req.body.email && req.body['email'].length > User.MAX_EMAIL_LENGTH){
             // email is too long
             return res.status(400).json({error: `Email is too long`})
         }
     
-        if ('password' in req.body && req.body['password'].length > User.MAX_PASSWORD_LENGTH) {
+        if (req.body.password && req.body['password'].length > User.MAX_PASSWORD_LENGTH) {
             // password is too long
             return res.status(400).json({error: `Password is too long`})
         }
         
-        if ('userBio' in req.body && req.body['userBio'].length > User.MAX_BIO_LENGTH){
+        if (req.body.userBio && req.body['userBio'].length > User.MAX_BIO_LENGTH){
             return res.status(400).json({error: `UserBio is too long`})
         }
     
-        if ('userName' in req.body && req.body['userName'].length > User.MAX_USERNAME_LENGTH){
+        if (req.body.userName && req.body['userName'].length > User.MAX_USERNAME_LENGTH){
             return res.status(400).json({error: `UserName is too long`})
         }
     

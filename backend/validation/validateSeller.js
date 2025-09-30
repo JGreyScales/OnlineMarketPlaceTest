@@ -33,7 +33,7 @@ function validatePostSeller(req, res){
             return res.status(400).json({error: `No body present`})
         }
 
-        if (!'userID' in req.body){
+        if (!req.body.userID){
             return res.status(400).json({error: `No senderID present`})
         }
         
@@ -49,11 +49,11 @@ function validatePostSeller(req, res){
             return res.status(401).json({error: `SenderID does not match targetID`})
         }
     
-        if ('storepageBio' in req.body && req.body['storepageBio'].length > Seller.MAX_SELLER_STORAGEPAGE_BIO_LENGTH){
+        if (req.body.storepageBio && req.body['storepageBio'].length > Seller.MAX_SELLER_STORAGEPAGE_BIO_LENGTH){
             return res.status(400).json({error: `storepageBio is too long`})
         }
     
-        if ('storepageName' in req.body && req.body['storepageName'].length > Seller.MAX_SELLER_STOREPAGE_NAME_LENGTH){
+        if (req.body.storepageName && req.body['storepageName'].length > Seller.MAX_SELLER_STOREPAGE_NAME_LENGTH){
             return res.status(400).json({error: `storagepageName is too long`})
         }
     

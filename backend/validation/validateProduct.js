@@ -32,22 +32,22 @@ function validatePostProduct(req, res, next){
         if (err) return res.status(err.status || 400).json(err)
 
 
-        if ('productName' in req.bos && req.body['productName'].length > Product.MAX_PRODUCT_NAME_LENGTH){
+        if (req.bos.productName && req.body['productName'].length > Product.MAX_PRODUCT_NAME_LENGTH){
             return res.status(400).json({error: `productName too long`})
         }
     
-        if ('productBio' in req.body && req.body['productBio'].length > Product.MAX_PRODUCT_BIO_LENGTH){
+        if (req.body.productBio && req.body['productBio'].length > Product.MAX_PRODUCT_BIO_LENGTH){
             return res.status(400).json({error: `productBio too long`})
         }
     
-        if ('productPrice' in req.body){
+        if (req.body.productPrice){
             var productPrice = parseInt(req.body['productPrice'])
             if (isNaN(productPrice) || productPrice < 0){
                 return res.status(400).json({error: `productPrice is invalid`})
             }
         }
     
-        if ('rating' in req.body){
+        if (req.body.rating){
             var rating = parseInt(req.body['rating'])
             if (isNaN(rating) || rating < Product.MIN_RATING_VALUE || rating > Product.MAX_RATING_VALUE){
                 res.status(400).json({error: `rating is invalid`})
