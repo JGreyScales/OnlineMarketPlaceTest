@@ -13,10 +13,10 @@
 -- Table structure for table `Products`
 --
 
-DROP TABLE IF EXISTS `Products`;
+DROP TABLE IF EXISTS `Product`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `Products` (
+CREATE TABLE `Product` (
   `productID` mediumint unsigned NOT NULL AUTO_INCREMENT,
   `sellerID` mediumint unsigned DEFAULT NULL,
   `productImage` longblob,

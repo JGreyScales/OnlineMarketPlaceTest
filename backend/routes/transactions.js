@@ -1,22 +1,46 @@
 const { TransactionList } = require('../controllers/Transactions/transactionController');
-
+const {validateGetTransaction} = require('../validation/validateTransaction')
 const express = require('express');
 const router = express.Router();
 
-router.get("/:transID", (req, res) => {
-    res.send("SEND TRANSACTION");
+router.get("/:transID", validateGetTransaction, async (req, res) => {
+    const transactionListOBJ = new TransactionList()
+    try {
+        const result = await transactionListOBJ.getTransaction(parseInt(req.params.transID), "transactionID")
+        return res.status(result.statusCode).json(result)
+    } catch (error) {
+        return res.status(400).send(error.message)
+    }
 });
 
-router.get("/user/:userID", (req, res) => {
-    res.send("SEND TRANSACTION LIST");
+router.get("/user/:userID", validateGetTransaction, async (req, res) => {
+    const transactionListOBJ = new TransactionList()
+    try {
+        const result = await transactionListOBJ.getTransaction(req.params.userID, "userID")
+        return res.status(result.statusCode).json(result)
+    } catch (error) {
+        return res.status(400).send(error.message)
+    }
 });
 
-router.get("/seller/:sellerID", (req, res) => {
-    res.send("SEND TRANSACTION LIST");
+router.get("/seller/:sellerID", validateGetTransaction,  async (req, res) => {
+    const transactionListOBJ = new TransactionList()
+    try {
+        const result = await transactionListOBJ.getTransaction(req.params.userID, "sellerID")
+        return res.status(result.statusCode).json(result)
+    } catch (error) {
+        return res.status(400).send(error.message)
+    }
 });
 
-router.get("/product/:productID", (req, res) => {
-    res.send("SEND TRANSACTION LIST");
+router.get("/product/:productID", validateGetTransaction, async (req, res) => {
+    const transactionListOBJ = new TransactionList()
+    try {
+        const result = await transactionListOBJ.getTransaction(req.params.userID, "productID")
+        return res.status(result.statusCode).json(result)
+    } catch (error) {
+        return res.status(400).send(error.message)
+    }
 });
 
 module.exports = router;

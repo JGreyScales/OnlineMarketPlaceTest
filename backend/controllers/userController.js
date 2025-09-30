@@ -35,7 +35,7 @@ class User {
             connection.query(query, [email], (err, results) => {
                 
                 if (err) {
-                    console.log("err")
+                    console.log(err)
                     return reject({statusCode: 500, message: `Database query error: ${err.sqlMessage}`});
                 }
 

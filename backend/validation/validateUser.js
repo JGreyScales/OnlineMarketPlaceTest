@@ -1,7 +1,7 @@
 const {User} = require('../controllers/userController')
 const {authenticateToken} = require('../middleware/auth')
 const validator = require("validator")
-const ALLOWED_FIELDS = ['userID', 'userPhoto', 'userBio', 'userName', 'email', 'password', 'fundsAmount'];
+const ALLOWED_FIELDS = ['userPhoto', 'userBio', 'userName', 'email', 'password', 'fundsAmount'];
 
 
 async function validatePutUser(req, res, next) {

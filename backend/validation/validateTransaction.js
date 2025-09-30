@@ -1,21 +1,13 @@
-const {Transaction} = require('../controllers/Transactions/transactionClass')
 const {authenticateToken} = require('../middleware/auth')
-ALLOWED_FIELDS = ['userID'];
+ALLOWED_FIELDS = [];
 // transactions can only be created from the backend side
 // users will never send an API request specifically to make a transaction
 // the only API requests involving transactions will be the retrieval of them
 
-function validateGetTransaction(req, res, next) {
-    if (!authenticateToken(req)){
-        return res.status(401).json({error: 'Authentication Failed'})
-    }
-
-    if (req.body){
-        Object.keys(req.body).forEach((key) => {
-            if (!ALLOWED_FIELDS.includes(key)) {
-                return res.status(400).json({error: `Invalid field: ${key}`})
-            }
-        })
+async function validateGetTransaction(req, res, next) {
+    const isAuthenticated = await authenticateToken(req);
+    if (!isAuthenticated) {
+        return res.status(401).json({ error: 'Authentication Failed' });
     }
 
     if (!req.params.transID && !req.params.userID && !req.params.sellerID && !req.params.productID){
@@ -37,16 +29,6 @@ function validateGetTransaction(req, res, next) {
             // if userID is invalid
             res.status(401).json({error: `Invalid UserID`})
         }
-
-        // if requesting for a specific user, you must be to that user
-        var senderID = parseInt(req.body['userID'])
-        if (isNaN(senderID) || senderID < 0){
-            res.status(401).json({error: `Invalid SenderID`})
-        }
-
-        if (senderID != userID){
-            res.status(401).json({error: `SenderID must match userID`})
-        }
     }
 
     if (req.params.sellerID){
@@ -67,3 +49,5 @@ function validateGetTransaction(req, res, next) {
 
     next();
 }
+
+module.exports = {validateGetTransaction}
