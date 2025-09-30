@@ -3,6 +3,9 @@ A simple project to occupy time.
 
 # Goals
 - [ ] must allow user to create an account
+    - [x] user password must be encrypted
+    - [x] user must be able to authenticte with an existing account
+    - [x] user must be denied if authentication fails
     - [ ] must allow user to delete an account
     - [ ] must allow user to modify an account
     - [ ] must allow users to view their purchase history
