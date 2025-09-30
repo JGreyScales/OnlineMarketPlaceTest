@@ -37,6 +37,12 @@ function authenticateToken(req) {
     });
 }
 
+function getUserIDFromToken(req){
+    jwt.verify(token, process.env.JWT_SECRET, (err, payload) => {
+        if (err) return 0;
+        return payload.userID;
+    })
+}
 
 function generateToken(userID) {
     return jwt.sign(
