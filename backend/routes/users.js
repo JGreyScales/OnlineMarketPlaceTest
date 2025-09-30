@@ -39,7 +39,7 @@ router.get("/:userID/funds", validateGetUser, async (req, res) => {
     const userObj = new User();
     userObj.setUserID(req.params.userID)
     try {
-        const result = await userObj.getUserDetails()
+        const result = await userObj.getUserFunds()
         return res.status(result.statusCode).json(result)
     } catch (error) {
         return res.status(400).send(error.message)

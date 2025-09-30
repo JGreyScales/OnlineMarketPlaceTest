@@ -77,7 +77,22 @@ class User {
     }
 
     getUserFunds(){
+        return new Promise((resolve, reject) => {
+            let query = "SELECT userFundsAmount FROM User WHERE userID = ?"
+            connection.query(query, [this.#userID], (err, results) => {
+                if (err) {
+                    console.log(err)
+                    return reject({statusCode: 400, message: `Database query error: ${err.sqlMessage}`})
+                }
 
+                if (results.length === 0){
+                    return reject({statusCode: 404, message: 'User not found'})
+                }
+
+                const {userFundsAmount} = results[0]
+                return resolve({statusCode: 200, userFundsAmount: userFundsAmount})
+            })
+        })
     }
 
     deleteUser(){

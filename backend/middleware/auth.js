@@ -20,8 +20,8 @@ function authenticateToken(req) {
             if (req.params.userID) {
                 // If userID exists in params, check if the payload's userID matches the request's userID
                 if (payload.userID !== parseInt(req.params.userID)) {
-                    // If method is GET and the route path is exactly '/:userID', skip this check
-                    if (req.method === 'GET' && req.route.path === '/:userID') {
+                    // If method is GET and the route path is exactly '/:(someID)', skip this check
+                    if (req.method === 'GET' && (req.route.path === '/:userID' || req.route.path === '/:productID' || req.route.path === '/:sellerID')) {
                         return resolve(true)
                     }
 
