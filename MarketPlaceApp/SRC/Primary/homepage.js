@@ -14,7 +14,7 @@ export default function Homepage() {
     }
 
     try {
-      const response = await fetch('http://localhost:3000/user/authenticate', {
+      const response = await fetch('http://155.133.23.208:3000/user/authenticate', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -52,7 +52,7 @@ export default function Homepage() {
     }
 
     try {
-      const response = await fetch('http://localhost:3000/user/create', {
+      const response = await fetch('http://155.133.23.208:3000/user/create', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

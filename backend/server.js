@@ -22,6 +22,7 @@ app.use("/product", product);
 app.use("/interest", interest);
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
+// listen on all network intefaces
+app.listen(PORT, '0.0.0.0', () => {
     console.log(`Server running on port ${PORT}`);
 });
