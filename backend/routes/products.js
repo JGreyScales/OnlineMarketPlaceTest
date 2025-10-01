@@ -32,8 +32,11 @@ router.put("/create", validatePostProduct, async (req, res) => {
     } else {
         return res.status(404).send("user is not a seller")
     }
-
 });
+
+router.put("/:productID/purchase", validatePostProduct, async(req, res) => {
+    //
+})
 
 
 router.delete("/:productID", validateDeleteProduct, async (req, res) => {

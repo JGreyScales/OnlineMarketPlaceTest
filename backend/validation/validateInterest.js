@@ -1,7 +1,8 @@
 const {authenticateToken} = require('../middleware/auth')
 const {ProductList} = require('../controllers/Product/product')
 const {User} = require('../controllers/userController')
-const ALLOWED_FIELDS = ['productID', 'userID', 'sellerID', 'tagID']
+const {Interest} = require('../controllers/interestController')
+const ALLOWED_FIELDS = ['productID', 'userID', 'sellerID', 'tagID', 'tags']
 
 async function validateGetInterest(req, res, next) {
     const isAuthenticated = await authenticateToken(req);
@@ -20,7 +21,7 @@ async function validateGetInterest(req, res, next) {
 
 async function validatePutInterest(req, res , next) {
     try {
-        await validateGetInterest(req, res, (err) => {
+        await validateGetInterest(req, res, async (err) => {
             if (err) return res.status(err.status || 400).json(err)
 
             if (req.body){
@@ -39,8 +40,8 @@ async function validatePutInterest(req, res , next) {
                 if (isNaN(req.body.tagID) || req.body.tagID < 1){
                     return res.status(400).json({error: 'Invalid tagID'})
                 }
-
-                if (!Interest.tagExists(req.body.tagID)){
+                const tagExists = await Interest.tagExists(req.body.tagID)
+                if (!tagExists){
                     return res.status(404).json({error: 'TagID not found'})
                 }
             }
@@ -50,7 +51,8 @@ async function validatePutInterest(req, res , next) {
                     return res.status(400).json({error: 'Invalid productID'})
                 }
 
-                if (!ProductList.productExists(req.body.productID)) {
+                const productExists = await ProductList.productExists(req.body.productID)
+                if (!productExists) {
                     return res.status(404).json({error: 'ProductID not found'})
                 }
             }
@@ -59,8 +61,8 @@ async function validatePutInterest(req, res , next) {
                 if (isNaN(req.body.sellerID) || req.body.sellerID < 1){
                     return res.status(400).json({error: 'Invalid sellerID'})
                 }
-
-                if (!ProductList.userIsSeller(req.body.sellerID)){
+                const userIsSeller = await ProductList.userIsSeller(req.body.sellerID)
+                if (!userIsSeller){
                     return res.status(404).json({error: 'SellerID not found'})
                 }
             }
@@ -70,7 +72,8 @@ async function validatePutInterest(req, res , next) {
                     return res.status(400).json({error: 'Invalid userID'})
                 }
 
-                if (!User.userExists(req.body.userID)) {
+                const userExists = await User.userExists(req.body.userID)
+                if (!userExists) {
                     return res.status(404).json({error: 'UserID Not found'})
                 }
             }

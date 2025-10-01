@@ -3,7 +3,7 @@ import { Platform, StyleSheet, Text, View, TextInput, TouchableOpacity, Alert } 
 import { StatusBar } from 'expo-status-bar';
 import SessionStorage from 'react-native-session-storage';
 
-export default function Homepage() {
+export default function Login({navigation}) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -14,11 +14,9 @@ export default function Homepage() {
     }
 
     try {
-      const response = await fetch('http://155.133.23.208:3000/user/authenticate', {
+      const response = await fetch('http://localhost:3000/user/authenticate', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({
           email: email,
           password: password,
@@ -27,32 +25,25 @@ export default function Homepage() {
 
       if (response.ok) {
         const data = await response.json();
-
-        // Handle successful login
-        // Store the Authorization token in AsyncStorage
         SessionStorage.setItem('@sessionKey', data.Authorization);
-        console.log(SessionStorage.getItem('@sessionKey'))
-
-        // Optionally, notify the user or perform additional actions
-        Alert.alert('Success', 'You are logged in successfully!');
+        navigation.navigate('homepage')
         
       } else {
         const errorData = await response.json();
-        Alert.alert('Error', errorData.message || 'Login failed');
+        
       }
     } catch (error) {
-      Alert.alert('Error', 'Network error. Please try again.');
+     return
     }
   };
 
   const handleSignUp = async () => {
     if (!email || !password) {
-      Alert.alert('Error', 'Please enter both username and password');
       return;
     }
 
     try {
-      const response = await fetch('http://155.133.23.208:3000/user/create', {
+      const response = await fetch('http://localhost:3000/user/create', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -65,16 +56,12 @@ export default function Homepage() {
 
       if (response.ok) {
         const data = await response.json();
-        // Handle successful sign up
-
-        Alert.alert('Success', 'You have signed up successfully!');
+        await handleSignIn()
       } else {
-        const errorData = await response.json();
-        Alert.alert('Error', errorData.message || 'Sign up failed');
+        return
       }
     } catch (error) {
-      Alert.alert(error.message)
-    //   Alert.alert('Error', 'Network error. Please try again.');
+      return;
     }
   };
 

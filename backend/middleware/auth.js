@@ -62,10 +62,18 @@ function authenticateToken(req) {
 }
 
 function getUserIDFromToken(req){
-    jwt.verify(token, process.env.JWT_SECRET, (err, payload) => {
-        if (err) return NaN;
-        return payload.userID;
+    return new Promise((resolve, reject) => {
+        let token;
+        if (typeof(req) === 'string'){token = req?.split(' ')[1]}
+        else {token = req.header('Authorization')?.split(' ')[1];}
+        
+
+        jwt.verify(token, process.env.JWT_SECRET, (err, payload) => {
+            if (err) return reject(NaN);
+            return resolve(payload.userID);
+        })
     })
+   
 }
 
 function generateToken(userID) {

@@ -25,11 +25,14 @@ class ProductList {
     }
 
     static productExists(productID){
-        const query = "SELECT 1 WHERE EXISTS (SELECT 1 FROM Product WHERE productID = ?)"
-        connection.query(query, [productID], (err, results) => {
-            if (err) return false;
-            if (results.length === 1) return true;
+        return new Promise((resolve, reject) => {
+            const query = "SELECT 1 WHERE EXISTS (SELECT 1 FROM Product WHERE productID = ?)"
+            connection.query(query, [productID], (err, results) => {
+                if (err) return resolve(false);
+                if (results.length === 1) return resolve(true);
+            })
         })
+
     }
 
     async createProductRating(productID, rating, userID){
@@ -113,10 +116,12 @@ class ProductList {
     }
 
     static userIsSeller(sellerID) {
-        const query = "SELECT 1 WHERE EXISTS (SELECT 1 FROM Seller WHERE sellerID = ?)"
-        connection.query(query, [sellerID], (err, results) => {
-            if (err) return false;
-            if (results.length === 1) return true;
+        return new Promise((resolve, reject) => {
+            const query = "SELECT 1 WHERE EXISTS (SELECT 1 FROM Seller WHERE sellerID = ?)"
+            connection.query(query, [sellerID], (err, results) => {
+                if (err) return resolve(false);
+                if (results.length === 1) return resolve(true);
+            })
         })
     }
 }

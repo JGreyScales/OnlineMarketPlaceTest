@@ -7,7 +7,7 @@ const router = express.Router();
 
 router.get("/:sellerID", validateGetSeller, async (req, res) => {
     const sellerObj = new Seller()
-    if (req.params.sellerID === 'home') {sellerObj.setSellerID(getUserIDFromToken(req))}
+    if (req.params.sellerID === 'home') {sellerObj.setSellerID(await getUserIDFromToken(req))}
     else {sellerObj.setSellerID(req.params.sellerID)}
     try {
         const result = await sellerObj.getSeller()
@@ -20,7 +20,7 @@ router.get("/:sellerID", validateGetSeller, async (req, res) => {
 
 router.get("/:sellerID/products/:amount", validateGetSeller, async (req, res) => {
     const sellerObj = new Seller()
-    if (req.params.sellerID === 'home') {sellerObj.setSellerID(getUserIDFromToken(req))}
+    if (req.params.sellerID === 'home') {sellerObj.setSellerID(await getUserIDFromToken(req))}
     else {sellerObj.setSellerID(req.params.sellerID)}
     try {
         const result = sellerObj.getSellerProducts(req.params.amount)
@@ -33,7 +33,7 @@ router.get("/:sellerID/products/:amount", validateGetSeller, async (req, res) =>
 
 router.put("/create", validatePostSeller, async(req, res) => {
     const sellerObj = new Seller()
-    sellerObj.setSellerID(getUserIDFromToken(req))
+    sellerObj.setSellerID(await getUserIDFromToken(req))
     try{
         const result = await sellerObj.createSeller()
         return res.status(result.statusCode).json(result)
@@ -45,7 +45,7 @@ router.put("/create", validatePostSeller, async(req, res) => {
 router.patch("/update", validatePostSeller, async (req, res) => {
     // body contains [storepageBio, storepagePhoto, storepageName]
     const sellerObj = new Seller()
-    sellerObj.setSellerID(getUserIDFromToken(req))
+    sellerObj.setSellerID(await getUserIDFromToken(req))
     try {
         const result = await sellerObj.patchSeller(req.body)
         return res.status(result.statusCode).json(result)
@@ -58,7 +58,7 @@ router.patch("/update", validatePostSeller, async (req, res) => {
 
 router.delete("/delete", validateDeleteSeller, async (req, res) => {
     const sellerOBJ = new Seller()
-    sellerOBJ.setSellerID(getUserIDFromToken(req))
+    sellerOBJ.setSellerID(await getUserIDFromToken(req))
     try {
         const result = await sellerObj.deleteSeller()
         return res.status(400).send(error.message)

@@ -16,28 +16,15 @@ router.post("/authenticate", async (req, res) => {
         const result = await userOBJ.authenticateUser(req.body.email, req.body.password);
         return res.status(result.statusCode).json(result);
     } catch (error) {
-        return res.status(400).send(error.message);
-    }
-});
-
-
-router.get("/:userID", validateGetUser, async (req, res) => {
-    // body has None
-    const userOBJ = new User();
-    if (req.params.userID === 'home') {userOBJ.setUserID(getUserIDFromToken(req))}
-    else {userOBJ.setUserID(req.params.userID)}
-    try {
-        const result = await userOBJ.getUserDetails()
-        return res.status(result.statusCode).json(result)
-    } catch (error) {
-        return res.status(400).send(error.message)
+        console.log(error)
+        return res.status(error.statusCode).send(error.message);
     }
 });
 
 router.get("/funds", validateGetUser, async (req, res) => {
     // body has None
     const userOBJ = new User();
-    userOBJ.setUserID(getUserIDFromToken(req))
+    userOBJ.setUserID(await getUserIDFromToken(req))
     try {
         const result = await userOBJ.getUserFunds()
         return res.status(result.statusCode).json(result)
@@ -48,18 +35,31 @@ router.get("/funds", validateGetUser, async (req, res) => {
 
 router.get("/interestList", validateGetUser, async (req, res) => {
     const userOBJ = new User();
-    userOBJ.setUserID(getUserIDFromToken(req))
+    userOBJ.setUserID(await getUserIDFromToken(req))
     try {
         const result = await userOBJ.getUserInterests()
         return res.status(result.statusCode).json(result)
     } catch (error) {
-        return res.status(400).send(error.message)
+        return res.status(error.statusCode).send(error.message)
     }
 })
 
+router.get("/:userID", validateGetUser, async (req, res) => {
+    // body has None
+    const userOBJ = new User();
+    if (req.params.userID === 'home') {userOBJ.setUserID(await getUserIDFromToken(req))}
+    else {userOBJ.setUserID(req.params.userID)}
+    try {
+        const result = await userOBJ.getUserDetails()
+        return res.status(result.statusCode).json(result)
+    } catch (error) {
+        return res.status(400).send(error.message)
+    }
+});
+
 router.get("/weightedStorePage/:amount", validateGetUser, async (req, res) => {
     const userOBJ = new User();
-    userOBJ.setUserID(getUserIDFromToken(req))
+    userOBJ.setUserID(await getUserIDFromToken(req))
     try {
         const result = await userOBJ.generateWeightedProductList(req.params.amount)
         return res.status(result.statusCode).json(result)
@@ -71,7 +71,7 @@ router.get("/weightedStorePage/:amount", validateGetUser, async (req, res) => {
 router.delete("/", validateDeleteUser, async (req, res) => {
     // body has None
     const userOBJ = new User();
-    userOBJ.setUserID(getUserIDFromToken(req))
+    userOBJ.setUserID(await getUserIDFromToken(req))
     try {
         const result = await userOBJ.deleteUser()
         return res.status(result.statusCode).json(result)
@@ -87,7 +87,7 @@ router.patch("/", validatePostUser, async (req, res) => {
         return res.status(401).send("Not allowed to modify funds like this")
     }
     const userOBJ = new User();
-    userOBJ.setUserID(getUserIDFromToken(req))
+    userOBJ.setUserID(await getUserIDFromToken(req))
     try {
         const result = await userOBJ.updateUser(req.body)
         return res.status(result.statusCode).json(result)
@@ -99,7 +99,7 @@ router.patch("/", validatePostUser, async (req, res) => {
 router.patch("/fund", validatePostUser, async (req, res) => {
     // body has fundsAmount
     const userOBJ = new User();
-    userOBJ.setUserID(getUserIDFromToken(req))
+    userOBJ.setUserID(await getUserIDFromToken(req))
     if (!req.body.fundsAmount){
         return res.status(400).send('fundsAmount must be present')
     }

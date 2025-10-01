@@ -29,8 +29,9 @@ async function validateGetUser(req, res, next) {
     if (req.params.userID){
         if ( isNaN(req.params.userID) || req.params.userID < 1){
             // param userID is not valid
-            if (req.params.userID !== 'home')
-            return res.status(400).json({error: `Invalid userID`})
+            if (req.params.userID !== 'home'){
+                return res.status(400).json({error: `Invalid userID`})
+            }
         }
     }
 

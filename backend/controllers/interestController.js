@@ -13,11 +13,14 @@ class Interest {
     }    
 
     static tagExists(tagID){
-        const query = "SELECT 1 WHERE EXISTS (SELECT 1 FROM Interest WHERE tagID = ?)"
-        connection.query(query, [tagID], (err, results) => {
-            if (err) return false;
-            if (results.length === 1) return true;
+        return new Promise((resolve, reject) => {
+            const query = "SELECT 1 WHERE EXISTS (SELECT 1 FROM Interest WHERE tagID = ?)"
+            connection.query(query, [tagID], (err, results) => {
+                if (err) return resolve(false);
+                if (results.length === 1) return resolve(true);
+            })
         })
+
     }
 
     static objectTagCount(objectID, columnID){
@@ -28,7 +31,21 @@ class Interest {
         })
     }
 
-    delinkTag(tagID, targetID, targetColumn) {
+
+    findTagName(tagID){
+        return new Promise((resolve, reject) => {
+            const query = 'SELECT tag FROM Interest WHERE tagID = ?'
+            connection.query(query, [tagID], (err, results) => {
+                if (err) return reject({statusCode: 400, message:`Database query error:${err.sqlMessage}`});
+                if (results.length === 0) return reject({statusCode: 404, message:'Tag Not Found'});
+                return resolve({statusCode: 200, data: results[0].tag})
+                    
+            })
+        })
+    }
+
+
+    static delinkTag(tagID, targetID, targetColumn) {
         return new Promise((resolve, reject) => {
             let query = `DELETE FROM Interest_bridge WHERE tagID = ? AND  ${targetColumn} = ?`
             connection.query(query, [tagID, targetID], (err, results) => {
@@ -40,7 +57,7 @@ class Interest {
 
     linkTag(valueDict) {
         return new Promise((resolve, reject) => {
-            const query = "INSERT INTO Interest_bridge (";
+            let query = "INSERT INTO Interest_bridge (";
             const columnNameList = [];
             const valuesList = [];
     
@@ -62,7 +79,7 @@ class Interest {
     }
     
 
-    autocompleteInterest(value){
+    static autocompleteInterest(value){
         return new Promise((resolve, reject) => {
             let query = 'SELECT tag, tagID FROM Interest WHERE tag LIKE ? LIMIT 5'
             let queryTag = `%${value.toLowerCase()}%`

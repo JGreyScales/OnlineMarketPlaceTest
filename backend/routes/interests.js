@@ -3,15 +3,27 @@ const {validateDeleteInterest, validatePutInterest, validateGetInterest} = requi
 const {Interest} = require("../controllers/interestController")
 
 const express = require("express");
+const { validatePostUser } = require('../validation/validateUser');
 const router = express.Router();
 
-router.get("/:interestHalfFilled", validateGetInterest, async (req, res) => {
+router.get("/AC/:interestHalfFilled", validateGetInterest, async (req, res) => {
     const InterestObj = new Interest()
     try {
         const result = await InterestObj.autocompleteInterest(req.params.interestHalfFilled)
         return res.status(result.statusCode).json(result)
     } catch (error) {
         return res.status(400).send(error.message)
+    }
+})
+
+router.get("/tag/:tagID", validateGetInterest, async (req, res) => {
+    // bodyContains [tags: List]
+    const InterestObj = new Interest()
+    try {
+        const result = await InterestObj.findTagName(req.params.tagID)
+        return res.status(result.statusCode).json(result)
+    } catch (error) {
+        return res.status(error.status).send(error.message)
     }
 })
 
@@ -36,8 +48,6 @@ router.put("/link/user", validatePutInterest, async (req, res) => {
     if (Interest.objectTagCount(req.body.userID, 'userID') >= Interest.MAX_LINKED_INTERESTS){
         return res.status(401).send("Too many tags already linked")
     }
-
-
     const InterestObj = new Interest()
     try {
         const result = await InterestObj.linkTag({tagID: req.body.tagID, userID: req.body.userID})

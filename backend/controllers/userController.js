@@ -22,11 +22,14 @@ class User {
     }
 
     static userExists(userID){
-        const query = "SELECT 1 WHERE EXISTS (SELECT 1 FROM user WHERE userID = ?)"
-        connection.query(query, [userID], (err, results) => {
-            if (err) return false;
-            if (results.length === 1) return true;
+        return new Promise((resolve, reject) => {
+            const query = "SELECT 1 WHERE EXISTS (SELECT 1 FROM User WHERE userID = ?)"
+            connection.query(query, [userID], (err, results) => {
+                if (err) return resolve(false);
+                if (results.length === 1) return resolve(true);
+            })
         })
+
     }
 
     authenticateUser(email, password) {
