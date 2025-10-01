@@ -1,11 +1,13 @@
 const bcrypt = require("bcrypt")
-const {generateToken, authenticateToken} = require('../middleware/auth')
+const {generateToken} = require('../middleware/auth')
+const {ProductList} = require('../controllers/Product/product')
+const {Seller} = require("../controllers/sellerController")
 const connection = require("../models/db")
+const shuffle = require("../utils/shuffleArray")
 const SALT_ROUNDS = 14;
 
 class User {
     #userID
-    #interests
     MAX_EMAIL_LENGTH = 40;
     MAX_PASSWORD_LENGTH = 256;
     MAX_BIO_LENGTH = 250;
@@ -13,11 +15,18 @@ class User {
 
     constructor() {
         this.#userID = 0
-        this.#interests = {}
     }
 
     setUserID(userID){
         this.#userID = userID
+    }
+
+    static userExists(userID){
+        const query = "SELECT 1 WHERE EXISTS (SELECT 1 FROM user WHERE userID = ?)"
+        connection.query(query, [userID], (err, results) => {
+            if (err) return false;
+            if (results.length === 1) return true;
+        })
     }
 
     authenticateUser(email, password) {
@@ -101,13 +110,22 @@ class User {
 
     deleteUser(){
         return new Promise((resolve, reject) => {
+            if (ProductList.userIsSeller(this.#userID)){
+                const sellerOBJ = new Seller()
+                sellerOBJ.setSellerID(this.#userID)
+                try{
+                    sellerOBJ.deleteSeller()
+                } catch (error) {
+                    return reject({statusCode: 400, message: error.message})
+                }
+            }
+
             let query = "DELETE FROM User WHERE userID = ?"
             connection.query(query, [this.#userID], (err, results) => {
-                
                 if (err) {
                     return reject({statusCode: 400, message: `Database query error: ${err.sqlMessage}`})
                 }
-                return resolve({statusCode: 202, message: 'Entry queued for removal'})
+                return resolve({statusCode: 202, message: 'User Deleted'})
             })
         })
     }
@@ -157,7 +175,7 @@ class User {
 
     createUser(email, password){
         return new Promise((resolve, reject) => {
-            let query = "INSERT INTO User (email, passwordHash) VALUES (?, ?)"
+            const query = "INSERT INTO User (email, passwordHash) VALUES (?, ?)"
             password = bcrypt.hash(password, SALT_ROUNDS, (err, hash) => {
                 if (err) {
                     return reject({statusCode: 400, message: 'Error hashing password'})
@@ -169,12 +187,80 @@ class User {
                         return reject({statusCode: 400, message: `Database query error: ${err.sqlMessage}`})
                     }
     
-                    return resolve({statusCode: 201, message: 'Entry created'})
+                    return resolve({statusCode: 201, message: 'User Created'})
                 }) 
             })
             
         })
     }
+
+    grabWeightedProducts(tagID, amount){
+        return new Promise((resolve, reject) => {
+            query = "SELECT productID FROM Interest_bridge WHERE tagID = ? LIMIT ?"
+            connection.query(query, [tagID, amount], (err, results) => {
+                if (err) return reject([]);
+                const ProductListOBJ = new ProductList()
+                results.forEach(product => {
+                    ProductListOBJ.getProduct(product.tagIDs)
+                });
+
+            })
+        })
+
+    }
+
+    async generateWeightedProductList(amount) {
+        const interests = this.getUserInterests();
+        const productListOBJ = new ProductList();
+    
+        // No interests — fallback: fetch any N random products
+        if (!interests || interests.length === 0) {
+            const fallbackQuery = `SELECT productID FROM Interest_bridge LIMIT ?`;
+            return new Promise((resolve, reject) => {
+                connection.query(fallbackQuery, [amount], async (err, results) => {
+                    if (err) return reject(err);
+                    try {
+                        const productPromises = results.map(r => productListOBJ.getProduct(r.productID));
+                        const products = await Promise.all(productPromises);
+                        const uniqueProducts = Array.from(new Map(products.map(p => [p.productID, p])).values());
+                        shuffle(uniqueProducts);
+                        resolve(uniqueProducts.slice(0, amount));
+                    } catch (err) {
+                        reject(err);
+                    }
+                });
+            });
+        }
+    
+        // Interests exist — fetch weighted products for each interest
+        const productsPerInterest = Math.trunc(amount / interests.length);
+        const interestQuery = `SELECT productID FROM Interest_bridge WHERE tagID = ? LIMIT ?`;
+    
+        const allProductsNested = await Promise.all(
+            interests.map(interest => {
+                return new Promise((resolve, reject) => {
+                    connection.query(interestQuery, [interest, productsPerInterest], async (err, results) => {
+                        if (err) return reject(err);
+                        try {
+                            const productPromises = results.map(r => productListOBJ.getProduct(r.productID));
+                            const products = await Promise.all(productPromises);
+                            resolve(products);
+                        } catch (err) {
+                            reject(err);
+                        }
+                    });
+                });
+            })
+        );
+    
+        // Flatten, deduplicate, shuffle, and trim
+        const allProducts = allProductsNested.flat();
+        const uniqueProducts = Array.from(new Map(allProducts.map(p => [p.productID, p])).values());
+        shuffle(uniqueProducts);
+        return uniqueProducts.slice(0, amount);
+    }
+    
+    
 }
 
 module.exports = {User};

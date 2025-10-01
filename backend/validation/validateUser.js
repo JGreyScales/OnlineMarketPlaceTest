@@ -27,10 +27,16 @@ async function validateGetUser(req, res, next) {
     }
 
     if (req.params.userID){
-        var userID = parseInt(req.params.userID)
-        if ( isNaN(userID) || userID < 0){
+        if ( isNaN(req.params.userID) || req.params.userID < 1){
             // param userID is not valid
+            if (req.params.userID !== 'home')
             return res.status(400).json({error: `Invalid userID`})
+        }
+    }
+
+    if (req.params.amount){
+        if (isNaN(req.params.amount) || req.params.amount < 5 || req.params.amount > 50){
+            return res.status(400).json({error: `Invalid amount`})
         }
     }
 

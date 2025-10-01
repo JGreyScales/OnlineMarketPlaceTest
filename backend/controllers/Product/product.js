@@ -1,9 +1,7 @@
 const {Product} = require('./productController')
 const connection = require("../../models/db")
-
+const shuffle = require("../../utils/shuffleArray")
 class ProductList {
-    #products
-
     constructor(){}
 
     createProduct(valuesDict){
@@ -26,6 +24,14 @@ class ProductList {
         })
     }
 
+    static productExists(productID){
+        const query = "SELECT 1 WHERE EXISTS (SELECT 1 FROM Product WHERE productID = ?)"
+        connection.query(query, [productID], (err, results) => {
+            if (err) return false;
+            if (results.length === 1) return true;
+        })
+    }
+
     async createProductRating(productID, rating, userID){
         return new Promise((resolve, reject) => {
             query = "INSERT INTO Rating (productID, rating, userID, verifiedBuyer) VALUES (?, ?, ?, ?)"
@@ -34,7 +40,7 @@ class ProductList {
 
             connection.query(verifiedBuyerQuery, [userID, productID], (err, results) => {
                 if (err) return reject({statusCode: 400, message: `Database query error:${err.sqlMessage}`});
-                if (results.lenth === 1) verifiedBuyer = true;
+                if (results.length === 1) verifiedBuyer = true;
             })
 
             connection.query(query, [productID, rating, userID, verifiedBuyer], (err, results) => {
@@ -71,7 +77,7 @@ class ProductList {
             const query = "SELECT sellerID, productImage, productName, productBio, productPrice, updatedAt, createdAt FROM Product WHERE productID = ?"
             connection.query(query, [productID], async (err, results) => {
                 if (err) return reject({statusCode: 400, error: `Database query error:${err.sqlMessage}`});
-                if (results.lenth === 0) return reject({statusCode:404, error: `Product Not Found`})
+                if (results.length === 0) return reject({statusCode:404, error: `Product Not Found`})
 
                 const {sellerID, productImage, productName, productBio, productPrice, updatedAt, createdAt} = results[0]
                 const productOBJ = new Product(parseInt(productID), sellerID, productImage, productName, productBio, productPrice, updatedAt, createdAt);
@@ -103,6 +109,14 @@ class ProductList {
                 if (err) return reject({statusCode: 400, message: `Database query error:${err.sqlMessage}`});
                 return resolve({statusCode: 202, message: `Product queued for deletion`})
             })
+        })
+    }
+
+    static userIsSeller(sellerID) {
+        const query = "SELECT 1 WHERE EXISTS (SELECT 1 FROM Seller WHERE sellerID = ?)"
+        connection.query(query, [sellerID], (err, results) => {
+            if (err) return false;
+            if (results.length === 1) return true;
         })
     }
 }

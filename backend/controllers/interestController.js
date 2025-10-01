@@ -3,6 +3,7 @@ const connection = require("../models/db")
 
 class Interest {
     MAX_INTEREST_LENGTH = 20
+    MAX_LINKED_INTERESTS = 5
     #tag = ""
     #tagID = 0
 
@@ -10,6 +11,22 @@ class Interest {
         this.#tag = tag
         this.#tagID = tagID
     }    
+
+    static tagExists(tagID){
+        const query = "SELECT 1 WHERE EXISTS (SELECT 1 FROM Interest WHERE tagID = ?)"
+        connection.query(query, [tagID], (err, results) => {
+            if (err) return false;
+            if (results.length === 1) return true;
+        })
+    }
+
+    static objectTagCount(objectID, columnID){
+        const query = `SELECT tagID FROM Interest_bridge WHERE ${columnID} = ?`
+        connection.query(query, [objectID], (err, results) => {
+            if (err) return 999
+            return results.length
+        })
+    }
 
     delinkTag(tagID, targetID, targetColumn) {
         return new Promise((resolve, reject) => {

@@ -4,7 +4,7 @@ const seller = require("./routes/sellers");
 const product = require("./routes/products");
 const interest = require("./routes/interests")
 
-require('dotenv').config(); // load the .env file into memory
+require('dotenv').config({quiet: true}); // load the .env file into memory
 
 const express = require('express');
 const app = express();

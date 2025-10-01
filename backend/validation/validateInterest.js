@@ -1,5 +1,6 @@
 const {authenticateToken} = require('../middleware/auth')
-const {Interest} = require('../controllers/interestController')
+const {ProductList} = require('../controllers/Product/product')
+const {User} = require('../controllers/userController')
 const ALLOWED_FIELDS = ['productID', 'userID', 'sellerID', 'tagID']
 
 async function validateGetInterest(req, res, next) {
@@ -33,9 +34,14 @@ async function validatePutInterest(req, res , next) {
                 return res.status(400).json({error: `No body present`})
             }
 
+            if (req.params.tagID) {req.body.tagID = req.params.tagID}
             if (req.body.tagID){
                 if (isNaN(req.body.tagID) || req.body.tagID < 1){
                     return res.status(400).json({error: 'Invalid tagID'})
+                }
+
+                if (!Interest.tagExists(req.body.tagID)){
+                    return res.status(404).json({error: 'TagID not found'})
                 }
             }
 
@@ -43,17 +49,29 @@ async function validatePutInterest(req, res , next) {
                 if (isNaN(req.body.productID) || req.body.productID < 1) {
                     return res.status(400).json({error: 'Invalid productID'})
                 }
+
+                if (!ProductList.productExists(req.body.productID)) {
+                    return res.status(404).json({error: 'ProductID not found'})
+                }
             }
 
             if (req.body.sellerID) {
                 if (isNaN(req.body.sellerID) || req.body.sellerID < 1){
                     return res.status(400).json({error: 'Invalid sellerID'})
                 }
+
+                if (!ProductList.userIsSeller(req.body.sellerID)){
+                    return res.status(404).json({error: 'SellerID not found'})
+                }
             }
 
             if (req.body.userID) {
                 if (isNaN(req.body.userID) || req.body.userID < 1){
                     return res.status(400).json({error: 'Invalid userID'})
+                }
+
+                if (!User.userExists(req.body.userID)) {
+                    return res.status(404).json({error: 'UserID Not found'})
                 }
             }
 

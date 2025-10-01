@@ -17,6 +17,10 @@ router.get("/:interestHalfFilled", validateGetInterest, async (req, res) => {
 
 router.put("/link/product", validatePutInterest, async (req, res) => {
     // bodyContains [tagID, productID, sellerID]
+    if (Interest.objectTagCount(req.body.productID, 'productID') >= Interest.MAX_LINKED_INTERESTS){
+        return res.status(401).send("Too many tags already linked")
+    }
+
     const InterestObj = new Interest()
     try {
         const result = await InterestObj.linkTag({tagID: req.body.tagID, productID: req.body.productID, sellerID: req.body.sellerID})
@@ -29,6 +33,11 @@ router.put("/link/product", validatePutInterest, async (req, res) => {
 
 router.put("/link/user", validatePutInterest, async (req, res) => {
     // bodyContains [tagID, userID]
+    if (Interest.objectTagCount(req.body.userID, 'userID') >= Interest.MAX_LINKED_INTERESTS){
+        return res.status(401).send("Too many tags already linked")
+    }
+
+
     const InterestObj = new Interest()
     try {
         const result = await InterestObj.linkTag({tagID: req.body.tagID, userID: req.body.userID})

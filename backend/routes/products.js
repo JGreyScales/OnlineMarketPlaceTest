@@ -17,17 +17,22 @@ router.get("/:productID", validateGetProduct, async (req, res) => {
     }
 });
 
-router.post("/create", validatePostProduct, async (req, res) => {
+router.put("/create", validatePostProduct, async (req, res) => {
     // body contains [productName, productImage, productBio, productPrice]
     req.body.sellerID = getUserIDFromToken(req) // add sellerID to the body
     const productListOBJ = new ProductList()
-    try {
-        const result = await productListOBJ.createProduct(req.body)
-        return res.status(result.statusCode).json(result)
-    } catch (error) {
-        console.log(error)
-        return res.status(400).send(error.message)
+    if (productListOBJ.userIsSeller(req.body.sellerID)){
+        try {
+            const result = await productListOBJ.createProduct(req.body)
+            return res.status(result.statusCode).json(result)
+        } catch (error) {
+            console.log(error)
+            return res.status(400).send(error.message)
+        }
+    } else {
+        return res.status(404).send("user is not a seller")
     }
+
 });
 
 

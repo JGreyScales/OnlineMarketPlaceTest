@@ -6,6 +6,14 @@ class TransactionList {
 
     constructor() {}
 
+    static transactionExists(transactionID){
+        const query = "SELECT 1 WHERE EXISTS (SELECT 1 FROM Transaction WHERE transactionID = ?)"
+        connection.query(query, [transactionID], (err, results) => {
+            if (err) return false;
+            if (results.length === 1) return true;
+        })
+    }
+
     // Mark the method as async so that you can use await inside it
     async getTransaction(ID, columnName) {
         return new Promise((resolve, reject) => {

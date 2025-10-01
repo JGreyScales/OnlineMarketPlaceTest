@@ -14,7 +14,7 @@ connection.connect((err) => {
     console.log('Error connecting to the database:', err.message);
     return; // Return to stop further execution
   }
-  console.log(`Connected to the MySQL server on ${process.env.DB_HOST}:${process.env.DB_PORT}.`);
+  console.log(`Connected to the MySQL server on HIDDEN:${process.env.DB_PORT}.`);
 });
 
 module.exports = connection;
