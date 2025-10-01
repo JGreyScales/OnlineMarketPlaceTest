@@ -10,8 +10,11 @@ require('dotenv').config({ quiet: true }); // load the .env file into memory
 const express = require('express');
 const app = express();
 
-// Enable CORS for all routes
-app.use(cors());
+const corsOptions = {
+    origin: '*', // Allow all origins
+};
+app.use(cors(corsOptions));
+
 
 app.use(express.json()); // use json for incoming payloads
 
