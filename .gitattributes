@@ -1,58 +1,5 @@
-# Force correct language detection for common file types
-
-# JavaScript
+* linguist-language=JavaScript
 *.js linguist-language=JavaScript
 *.jsx linguist-language=JavaScript
-
-# TypeScript (if applicable)
 *.ts linguist-language=TypeScript
 *.tsx linguist-language=TypeScript
-
-# JSON files (commonly used in both Node.js and React Native projects)
-*.json linguist-language=JSON
-
-# Configuration and settings files
-*.yml linguist-language=YAML
-*.yaml linguist-language=YAML
-*.toml linguist-language=TOML
-
-# Mark images and assets correctly
-*.png linguist-language=Image
-*.jpg linguist-language=Image
-*.jpeg linguist-language=Image
-*.gif linguist-language=Image
-*.svg linguist-language=Image
-
-# CSS / SCSS / LESS for styling (if applicable)
-*.css linguist-language=CSS
-*.scss linguist-language=SCSS
-*.sass linguist-language=Sass
-*.less linguist-language=LESS
-
-# Markdown files for documentation
-*.md linguist-language=Markdown
-
-# For Expo assets and others
-*.png linguist-language=Image
-*.jpg linguist-language=Image
-*.jpeg linguist-language=Image
-*.svg linguist-language=Image
-*.gif linguist-language=Image
-
-# Babel configuration files (for React Native/Expo)
-*.babelrc linguist-language=JSON
-.babelrc.js linguist-language=JavaScript
-babel.config.js linguist-language=JavaScript
-
-# Node.js
-*.mjs linguist-language=JavaScript
-*.cjs linguist-language=JavaScript
-package.json linguist-language=JSON
-package-lock.json linguist-language=JSON
-
-# Lock files
-*.lock linguist-language=JSON
-
-# Gitignore, etc. should be treated as plain text
-*.gitignore linguist-language=Text
-*.eslintignore linguist-language=Text
