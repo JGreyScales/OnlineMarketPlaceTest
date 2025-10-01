@@ -1,10 +1,17 @@
-const request = require('supertest');
-const app = require('../../app'); // path to your Express app
+const { request } = require('express');
+const app = require('../../server'); // path to your Express app
 
-describe('User Routes', () => {
-  it('GET /api/users should return all users', async () => {
-    const res = await request(app).get('/api/users');
+describe('GET /user/authenticate', () => {
+  // normal Conditions
+
+
+  // negative Conditions
+
+  // no body present
+  test('should respond with 400 Malformed Data', async () => {
+    const res = await request(app).get("/user/authenticate")
     expect(res.statusCode).toBe(200);
-    expect(res.body).toHaveProperty('message', 'All users');
-  });
+    expect(res.body).toEqual({error: 'Malformed data'})
+  })
+  // edge conditions
 });

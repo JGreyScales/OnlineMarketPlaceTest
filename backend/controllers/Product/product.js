@@ -15,7 +15,7 @@ class ProductList {
             }
 
             query += columnNameList.join(', ') + ") VALUES (";
-            query += valuesList.map(() => '?').join(', ') = ")";
+            query += valuesList.map(() => '?').join(', ') + ")";
 
             connection.query(query, valuesList, (err, results) => {
                 if (err) return reject({statusCode: 400, message: `Database query error:${err.sqlMessage}`});
