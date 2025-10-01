@@ -4,6 +4,7 @@ const {Interest} = require("../controllers/interestController")
 
 const express = require("express");
 const { validatePostUser } = require('../validation/validateUser');
+const { getUserIDFromToken } = require('../middleware/auth');
 const router = express.Router();
 
 router.get("/AC/:interestHalfFilled", validateGetInterest, async (req, res) => {
@@ -44,13 +45,14 @@ router.put("/link/product", validatePutInterest, async (req, res) => {
 })
 
 router.put("/link/user", validatePutInterest, async (req, res) => {
-    // bodyContains [tagID, userID]
-    if (Interest.objectTagCount(req.body.userID, 'userID') >= Interest.MAX_LINKED_INTERESTS){
+    // bodyContains [tagID]
+    const userID = getUserIDFromToken(req)
+    if (Interest.objectTagCount(userID, 'userID') >= Interest.MAX_LINKED_INTERESTS){
         return res.status(401).send("Too many tags already linked")
     }
     const InterestObj = new Interest()
     try {
-        const result = await InterestObj.linkTag({tagID: req.body.tagID, userID: req.body.userID})
+        const result = await InterestObj.linkTag({tagID: req.body.tagID, userID: userID})
         return res.status(result.statusCode).json(result)
     } catch (error) {
         return res.status(400).send(error.message)

@@ -108,7 +108,7 @@ export default function UserHomePage() {
 
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: [Image],
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       aspect: [1, 1],
       quality: 0,
@@ -116,7 +116,7 @@ export default function UserHomePage() {
     });
   
     if (!result.canceled) {
-      setUserPhotoInput(result.assets[0].base64);
+      setUserPhotoInput('data:image/png;base64,' + result.assets[0].base64);
     }
   };
   
@@ -132,6 +132,7 @@ export default function UserHomePage() {
       setFetchingSuggestions(true);
       try {
         const sessionToken = await SessionStorage.getItem('@sessionKey');
+        
         const response = await fetch(`http://localhost:3000/interest/AC/${interestInput}`, {
           headers: {
             Authorization: sessionToken,
@@ -174,17 +175,40 @@ export default function UserHomePage() {
     setInterests((prev) => prev.filter((i) => i !== interest));
   };
 
-  const onSave = () => {
-    console.log(userPhotoInput)
-    // Here you would call an API to save the updated profile info
+  const onSave = async () => {
+    setModalVisible(false);
     setContent((prev) => ({
       ...prev,
       userName: userNameInput.trim(),
       userBio: userBioInput.trim(),
-      userPhoto: userPhotoInput,
-      interests,
+      userPhoto: userPhotoInput
     }));
-    setModalVisible(false);
+
+    try {
+        const sessionToken = await SessionStorage.getItem('@sessionKey');
+        const requestBody = {
+            userName: userNameInput.trim(),
+            userBio: userBioInput.trim(),
+        };
+        
+        if (userPhotoInput.trim() !== "") {
+            requestBody.userPhoto = userPhotoInput.trim();
+        }
+        
+        const response = await fetch('http://localhost:3000/user/', {
+            method: 'PATCH',
+            headers: {
+                'Authorization': sessionToken,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(requestBody)
+        });
+    } catch (err) {
+
+    }
+
+
+
   };
 
   if (loading) {

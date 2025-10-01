@@ -135,7 +135,7 @@ class User {
 
     updateUser(valuesDict){
         return new Promise((resolve, reject) => {
-            const query = "UPDATE User SET "
+            let query = "UPDATE User SET "
             const updates = []
             const valuesList = []
 
