@@ -85,6 +85,15 @@ export default function TransactionLog({navigation}){
       grabTransactionsWithFilter();
     }, [selectedSellerID, selectedProductID, selectedTransactionID]);    
 
+    if (error) {
+      return (
+        <View style={GlobalStyles.center}>
+          <Text style={GlobalStyles.errorText}>{error}</Text>
+        </View>
+      );
+    }
+
+    
     return (
         <>
         <View style={{ padding: 16 }}>
