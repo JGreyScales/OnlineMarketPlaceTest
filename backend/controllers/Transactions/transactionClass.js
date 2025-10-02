@@ -12,13 +12,24 @@ class Transaction {
     #userName = ""
     MAX_TRANSACTION_NAME_LENGTH = 20;
 
-    constructor(transactionID, userID, sellerID, productID, priceAmount, date){
+    constructor(userID, sellerID, productID, priceAmount, date, transactionID = null){
         this.#transactionID = transactionID
         this.#userID = userID
         this.#sellerID = sellerID
         this.#productID = productID
         this.#priceAmount = priceAmount
         this.#date = date
+    }
+
+    submitNewTransactionLog(){
+        return new Promise((resolve, reject) => {
+            const insertQuery = "INSERT INTO Transaction (userID, sellerID, productID, priceAmount, date) VALUES (?, ?, ?, ?, ?)"
+            connection.query(insertQuery, [this.#userID, this.#sellerID, this.#productID, this.#priceAmount, this.#date], (err, result) => {
+                if (err) return reject(false);
+                return resolve(true)
+            })
+        })
+
     }
 
     // Convert populate methods to return Promises

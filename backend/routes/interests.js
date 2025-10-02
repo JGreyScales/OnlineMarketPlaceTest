@@ -36,6 +36,7 @@ router.post("/tags", validateGetInterest, async (req, res) => {
 })
 
 router.put("/link/product", validatePutInterest, async (req, res) => {
+    console.log("link interest to product ran")
     // bodyContains [tagID, productID, sellerID]
     if (Interest.objectTagCount(req.body.productID, 'productID') >= Interest.MAX_LINKED_INTERESTS){
         return res.status(401).send("Too many tags already linked")
@@ -52,6 +53,7 @@ router.put("/link/product", validatePutInterest, async (req, res) => {
 })
 
 router.put("/link/user", validatePutInterest, async (req, res) => {
+    console.log("link interest to user ran")
     // bodyContains [tagID]
     const userID = getUserIDFromToken(req)
     if (Interest.objectTagCount(userID, 'userID') >= Interest.MAX_LINKED_INTERESTS){
@@ -67,6 +69,7 @@ router.put("/link/user", validatePutInterest, async (req, res) => {
 })
 
 router.delete("/link/product/:tagID", validateDeleteInterest, async (req, res) => {
+    console.log('delete product link ran')
     // bodyContains [productID]
     const InterestObj = new Interest()
     try {
@@ -78,6 +81,7 @@ router.delete("/link/product/:tagID", validateDeleteInterest, async (req, res) =
 })
 
 router.delete("/link/user/:tagID", validateDeleteInterest, async (req, res) => {
+    console.log('delete user link ran')
     // bodyContains [userID]
     const InterestObj = new Interest()
     try {

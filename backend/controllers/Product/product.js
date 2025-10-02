@@ -1,6 +1,7 @@
 const {Product} = require('./productController')
 const connection = require("../../models/db")
-const shuffle = require("../../utils/shuffleArray")
+const Transaction = require("../Transactions/transactionClass")
+
 class ProductList {
     constructor(){}
 
@@ -21,6 +22,32 @@ class ProductList {
                 if (err) return reject({statusCode: 400, message: `Database query error:${err.sqlMessage}`});
                 resolve({statusCode: 202, message: `Product created`})
             })
+        })
+    }
+
+    purchaseProduct(buyerID, productID){
+        return new Promise(async (resolve, reject) => {
+            const ProductOBJ = await this.getProduct(productID)
+            let userFunds = 0.00
+            // verify the user has the funds to purchase it
+            const userFundQuery = "SELECT userFundsAmount FROM User WHERE userID = ?"
+            await connection.query(userFundQuery, [buyerID], (err, results) => {
+                if (err) return reject({statusCode: 400, message:`Database query error:${err.sqlMessage}`});
+                if (results.length === 0) return reject({statusCode: 404, message:'User not found'});
+                userFunds = results[0].userFundsAmount
+            })
+
+            // remove the funds from the user account
+            const updateUserFundQuery = "UPDATE User SET userFundsAmount = userFundsAmount - ? WHERE userID = ?"
+            connection.query(updateUserFundQuery, [productOBJ.productPrice, buyerID], (err, results) => {
+                if (err) return reject({statusCode: 400, message:`Database query error:${err.sqlMessage}`});
+            })
+
+            // create a transaction log
+            const date = new Date().toISOString().split('T')[0];
+            const TransactionOBJ = Transaction(buyerID, productOBJ.sellerID, productID, productOBJ.productPrice, date);
+            await TransactionOBJ.submitNewTransactionLog()
+            resolve({statusCode: 200})
         })
     }
 
