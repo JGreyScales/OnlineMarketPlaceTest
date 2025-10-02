@@ -133,7 +133,7 @@ export default function TransactionLog({navigation}){
                 <View style={GlobalStyles.transactionTextGroup}>
                   <Text style={GlobalStyles.transactionSeller}>Seller: {item.sellerName}</Text>
                   <Text style={GlobalStyles.transactionProduct}>Product: {item.productName}</Text>
-                  <Text style={GlobalStyles.transactionDate}>{item.date}</Text>
+                  <Text style={GlobalStyles.transactionDate}>ID {item.ID} on {item.date}</Text>
                 </View>
                 <Text style={GlobalStyles.transactionPrice}>${item.priceAmount}</Text>
               </View>
