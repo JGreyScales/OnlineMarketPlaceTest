@@ -157,7 +157,7 @@ export default function TransactionLog({navigation}){
                 keyExtractor={(item, index) => index.toString()}
                 renderItem={({ item }) => (
                   <TouchableOpacity
-                    style={GlobalStyles.suggestionItem}
+                    style={[GlobalStyles.suggestionItem, {alignItems: 'center'}]}
                     onPress={() => {
                       setSelectedSellerID(item.sellerID);
                       setShowSellerModal(false);
@@ -186,7 +186,7 @@ export default function TransactionLog({navigation}){
                     keyExtractor={(item, index) => index.toString()}
                     renderItem={({ item }) => (
                     <TouchableOpacity
-                        style={GlobalStyles.suggestionItem}
+                        style={[GlobalStyles.suggestionItem, {alignItems: 'center'}]}
                         onPress={() => {
                         setSelectedProductID(item.productID);
                         setShowProductModal(false);
@@ -214,7 +214,7 @@ export default function TransactionLog({navigation}){
                 keyExtractor={(item, index) => index.toString()}
                 renderItem={({ item }) => (
                   <TouchableOpacity
-                    style={GlobalStyles.suggestionItem}
+                    style={[GlobalStyles.suggestionItem, {alignItems: 'center'}]}
                     onPress={() => {
                       setSelectedTransactionID(item);
                       setShowTransactionModal(false);
