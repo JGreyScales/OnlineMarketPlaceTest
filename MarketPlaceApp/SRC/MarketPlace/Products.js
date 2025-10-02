@@ -6,9 +6,27 @@ import { CustomButton } from '../functions/CustomButton';
 import { useEffect, useState } from 'react';
 
 export default function ProductsPage(){
+    const [error, setError] = useState(null);
 
-    const grabWeightedProducts = () => {
+    const [productsList, setProductsList] = useState([])
 
+    const grabWeightedProducts = async () => {
+        try {
+            const sessionToken = await SessionStorage.getItem('@sessionKey');
+            // fetches 25 results from the weighted storepage
+            const response = await fetch('http://localhost:3000/user/weightedStorePage/25',{
+                method: 'GET',
+                headers: {
+                    Authorization: sessionToken
+                }
+            })
+
+            if (!response.ok){setError('Failed fetching products'); return}
+            const data = await response.json();
+            
+        } catch (error) {
+            setError('Error fetching products:' + error.message)
+        }
     }
 
     useEffect(() => {
@@ -16,6 +34,9 @@ export default function ProductsPage(){
     }, [])
 
     const goToHomepage = () => {navigateNewPage('homepage', navigation)}
+
+
+    if (error)
 
     return (
     <>

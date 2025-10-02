@@ -36,7 +36,7 @@ async function validateGetUser(req, res, next) {
     }
 
     if (req.params.amount){
-        if (isNaN(req.params.amount) || req.params.amount < 5 || req.params.amount > 50){
+        if (isNaN(req.params.amount) || req.params.amount < 1 || req.params.amount > 50){
             return res.status(400).json({error: `Invalid amount`})
         }
     }

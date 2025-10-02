@@ -258,57 +258,36 @@ class User {
     }
 
     async generateWeightedProductList(amount) {
-        const interests = this.getUserInterests();
-        const productListOBJ = new ProductList();
-    
-        // No interests — fallback: fetch any N random products
-        if (!interests || interests.length === 0) {
-            const fallbackQuery = `SELECT productID FROM Interest_bridge LIMIT ?`;
-            return new Promise((resolve, reject) => {
-                connection.query(fallbackQuery, [amount], async (err, results) => {
-                    if (err) return reject(err);
-                    try {
-                        const productPromises = results.map(r => productListOBJ.getProduct(r.productID));
-                        const products = await Promise.all(productPromises);
-                        const uniqueProducts = Array.from(new Map(products.map(p => [p.productID, p])).values());
-                        shuffle(uniqueProducts);
-                        resolve(uniqueProducts.slice(0, amount));
-                    } catch (err) {
-                        reject(err);
-                    }
-                });
-            });
-        }
-    
-        // Interests exist — fetch weighted products for each interest
-        const productsPerInterest = Math.trunc(amount / interests.length);
-        const interestQuery = `SELECT productID FROM Interest_bridge WHERE tagID = ? LIMIT ?`;
-    
-        const allProductsNested = await Promise.all(
-            interests.map(interest => {
-                return new Promise((resolve, reject) => {
-                    connection.query(interestQuery, [interest, productsPerInterest], async (err, results) => {
-                        if (err) return reject(err);
-                        try {
-                            const productPromises = results.map(r => productListOBJ.getProduct(r.productID));
-                            const products = await Promise.all(productPromises);
-                            resolve(products);
-                        } catch (err) {
-                            reject(err);
-                        }
-                    });
-                });
+        return new Promise(async (resolve, reject) => {
+            const interests = (await this.getUserInterests()).data;
+            const productListOBJ = new ProductList();
+            let queryString;
+            if (!interests || interests.length === 0) {
+                queryString = `
+                    SELECT DISTINCT ib.productID, p.productImage, p.productName, p.productPrice
+                    FROM Interest_bridge ib
+                    JOIN Product p ON ib.productID = p.productID
+                    LIMIT ?
+                `;
+            } else {
+                shuffle(interests);
+                queryString = `
+                    SELECT DISTINCT ib.productID, p.productImage, p.productName, p.productPrice
+                    FROM Interest_bridge ib
+                    JOIN Product p ON ib.productID = p.productID
+                    WHERE ib.tagID IN (${interests.join(',')})
+                    LIMIT ?
+                `;
+            }
+            connection.query(queryString, [amount], (err, results) => {
+                if (err) return reject({StatusCode: 400, message: `Database query error: ${err.sqlMessage}`});
+                if (results.length === 0) return reject({statusCode: 404, message: `No Products Found`})
+                shuffle(results)
+                return resolve({statusCode: 200, data: results})
             })
-        );
-    
-        // Flatten, deduplicate, shuffle, and trim
-        const allProducts = allProductsNested.flat();
-        const uniqueProducts = Array.from(new Map(allProducts.map(p => [p.productID, p])).values());
-        shuffle(uniqueProducts);
-        return uniqueProducts.slice(0, amount);
-    }
-    
-    
+        })
+
+    }    
 }
 
 module.exports = {User};

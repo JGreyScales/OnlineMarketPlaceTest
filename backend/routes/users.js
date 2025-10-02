@@ -69,10 +69,11 @@ router.get("/weightedStorePage/:amount", validateGetUser, async (req, res) => {
     const userOBJ = new User();
     userOBJ.setUserID(await getUserIDFromToken(req))
     try {
-        const result = await userOBJ.generateWeightedProductList(req.params.amount)
+        const result = await userOBJ.generateWeightedProductList(parseInt(req.params.amount))
         return res.status(result.statusCode).json(result)
     } catch (error) {
-        return res.status(400).send(error.message)
+        console.log(error)
+        return res.status(error.statusCode || 400).send(error.message)
     }
 })
 
