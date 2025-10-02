@@ -205,4 +205,129 @@ export const GlobalStyles = StyleSheet.create({
     color: colors.error,
     fontSize: 16,
   },
+
+    // Transaction Log (Full-width row per transaction)
+    transactionLogItem: {
+      width: '100%',
+      backgroundColor: '#fff',
+      padding: 16,
+      marginVertical: 6,
+      borderRadius: 8,
+      borderWidth: 1,
+      borderColor: colors.border,
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      elevation: 1,
+    },
+    transactionTextGroup: {
+      flex: 3,
+    },
+    transactionSeller: {
+      fontSize: 16,
+      fontWeight: '600',
+      color: colors.text,
+    },
+    transactionProduct: {
+      fontSize: 14,
+      color: '#555',
+    },
+    transactionDate: {
+      fontSize: 12,
+      color: '#999',
+    },
+    transactionPrice: {
+      flex: 1,
+      fontSize: 16,
+      fontWeight: '700',
+      textAlign: 'right',
+      color: colors.primary,
+    },
+  
+    // Product Grid (Flex layout)
+    productGridContainer: {
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      justifyContent: 'space-between',
+      paddingVertical: 10,
+    },
+    productCard: {
+      width: '48%',
+      backgroundColor: '#fff',
+      borderRadius: 10,
+      borderWidth: 1,
+      borderColor: colors.border,
+      padding: 10,
+      marginBottom: 12,
+      elevation: 2,
+    },
+    productImage: {
+      width: '100%',
+      height: 120,
+      borderRadius: 8,
+      marginBottom: 8,
+      resizeMode: 'cover',
+    },
+    productTitle: {
+      fontSize: 14,
+      fontWeight: '600',
+      color: colors.text,
+      marginBottom: 4,
+    },
+    productPrice: {
+      fontSize: 14,
+      fontWeight: '700',
+      color: colors.primary,
+    },
+  
+    // Product Detail Page
+    productDetailContainer: {
+      flex: 1,
+      padding: 20,
+      backgroundColor: colors.background,
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+    },
+    productDetailImageContainer: {
+      flex: 1,
+      marginRight: 20,
+    },
+    productDetailImage: {
+      width: '100%',
+      height: 300,
+      borderRadius: 12,
+      resizeMode: 'contain',
+      backgroundColor: '#fff',
+    },
+    productDetailInfo: {
+      flex: 1,
+    },
+    productDetailTitle: {
+      fontSize: 24,
+      fontWeight: '700',
+      color: colors.text,
+      marginBottom: 10,
+    },
+    productDetailPrice: {
+      fontSize: 22,
+      fontWeight: '700',
+      color: colors.primary,
+      marginBottom: 10,
+    },
+    productDetailSeller: {
+      fontSize: 16,
+      color: '#555',
+      marginBottom: 8,
+    },
+    productDetailRating: {
+      fontSize: 14,
+      color: '#FFA000', // Amber for star rating
+      marginBottom: 12,
+    },
+    productDetailDescription: {
+      fontSize: 16,
+      color: colors.text,
+      lineHeight: 22,
+    },
+  
 });

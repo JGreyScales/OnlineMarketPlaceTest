@@ -6,9 +6,9 @@ A simple project to occupy time.
     - [x] user password must be encrypted
     - [x] user must be able to authenticte with an existing account
     - [x] user must be denied if authentication fails
-    - [x] must allow user to delete an account
+    - [] must allow user to delete an account
     - [x] must allow user to modify an account
-    - [x] must allow users to view their purchase history
+    - [] must allow users to view their purchase history
 - [ ] must allow seller to post a product
     - [ ] must allow seller to set a location
     - [ ] must allow seller to set a price
@@ -19,7 +19,7 @@ A simple project to occupy time.
 - [ ] Users must be allowed to view an entire sellers page
 - [ ] When a product is sold, the seller should get 0.97x of the profit directly to their user account
 - [ ] have a mimiced screen for withdrawing money
-- [ ] must allow user upload "money" to the site
+- [x] must allow user upload "money" to the site
 - [ ] must allow user to spend their money on the site
 - [x] must use the node.JS server for data requests
 - [x] must use the MySQL server for data storage
