@@ -2,6 +2,7 @@ const bcrypt = require("bcrypt")
 const {generateToken} = require('../middleware/auth')
 const {ProductList} = require('../controllers/Product/product')
 const {Seller} = require("../controllers/sellerController")
+const {Interest} = require('../controllers/interestController')
 const connection = require("../models/db")
 const shuffle = require("../utils/shuffleArray")
 const SALT_ROUNDS = 14;
@@ -133,34 +134,78 @@ class User {
         })
     }
 
-    updateUser(valuesDict){
-        return new Promise((resolve, reject) => {
-            let query = "UPDATE User SET "
-            const updates = []
-            const valuesList = []
 
-            for (let field in valuesDict){
-                if (field == 'password'){
-                    updates.push("passwordHash = ?")
-                    valuesList.push(bcrypt.hashSync(valuesDict[field], SALT_ROUNDS))
-                } else {
-                    updates.push(`${field} = ?`)
-                    valuesList.push(valuesDict[field])
+    async updateUser(valuesDict) {
+        return new Promise(async (resolve, reject) => {
+            // If interests are present in the valuesDict
+            if (valuesDict.interests) {
+                const interestOBJ = new Interest();
+                const usersTagIDs = [];
+                try {
+                    // Resolve all tag IDs asynchronously
+                    for (const interestTag of valuesDict.interests) {
+                        const tagID = await interestOBJ.findTagID(interestTag);
+                        usersTagIDs.push(tagID.data);
+                    }
+    
+                    // Delete existing interests from the Interest_bridge table for the current user
+                    const purgeUserInterestsQuery = "DELETE FROM Interest_bridge WHERE userID = ?";
+                    await connection.query("SET SQL_SAFE_UPDATES = 0");
+                    await new Promise((resolve, reject) => {
+                        connection.query(purgeUserInterestsQuery, [this.#userID], (err, results) => {
+                            if (err) return reject(err);
+                            resolve(results);
+                        });
+                    });
+                    await connection.query("SET SQL_SAFE_UPDATES = 1");
+
+                    const insertQuery = "INSERT INTO Interest_bridge (userID, tagID) VALUES (?, ?)";
+                    for (const interestID of usersTagIDs){
+                        await new Promise((resolve, reject) => {
+                            connection.query(insertQuery, [this.#userID, interestID], (err, results) => {
+                                if (err) return reject(err);
+                                resolve(results);
+                            });
+                        });
+                    }                     
+                    
+                } catch (err) {
+                    return reject({statusCode: 400, message: `Error processing interests: ${err.message}`});
                 }
-
+    
+                // Remove interests from the update object to proceed with other fields
+                delete valuesDict.interests;
             }
-
-            query += updates.join(', ') + " WHERE userID = ?"
-            valuesList.push(this.#userID)
+    
+            // Prepare the update query for other user fields (e.g., password, name, etc.)
+            let query = "UPDATE User SET ";
+            const updates = [];
+            const valuesList = [];
+    
+            for (let field in valuesDict) {
+                if (field == 'password') {
+                    updates.push("passwordHash = ?");
+                    valuesList.push(bcrypt.hashSync(valuesDict[field], SALT_ROUNDS));
+                } else {
+                    updates.push(`${field} = ?`);
+                    valuesList.push(valuesDict[field]);
+                }
+            }
+    
+            query += updates.join(', ') + " WHERE userID = ?";
+            valuesList.push(this.#userID);
+    
+            // Execute the final update query for user fields
             connection.query(query, valuesList, (err, results) => {
                 if (err) {
-                    return reject({statusCode: 400, message: `Database query error: ${err.sqlMessage}`})
+                    return reject({statusCode: 400, message: `Database query error: ${err.sqlMessage}`});
                 }
-
-                return resolve({statusCode: 202, message: 'Entry updated'})
-            })
-        })
+    
+                return resolve({statusCode: 202, message: 'Entry updated successfully'});
+            });
+        });
     }
+    
 
     updateFunds(newFunds){
         return new Promise((resolve, reject) => {

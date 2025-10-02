@@ -6,6 +6,7 @@ const router = express.Router();
 
 // doesnt use a middleware for password authentication
 router.post("/authenticate", async (req, res) => {
+    console.log("authenticate ran")
     // body has [email, password]
     if (!req.body || !req.body.email || !req.body.password) {
         return res.status(400).json({error: 'Malformed data'});
@@ -22,6 +23,8 @@ router.post("/authenticate", async (req, res) => {
 });
 
 router.get("/funds", validateGetUser, async (req, res) => {
+    console.log("funds ran")
+
     // body has None
     const userOBJ = new User();
     userOBJ.setUserID(await getUserIDFromToken(req))
@@ -34,6 +37,8 @@ router.get("/funds", validateGetUser, async (req, res) => {
 });
 
 router.get("/interestList", validateGetUser, async (req, res) => {
+    console.log("interestList ran")
+
     const userOBJ = new User();
     userOBJ.setUserID(await getUserIDFromToken(req))
     try {
@@ -45,6 +50,8 @@ router.get("/interestList", validateGetUser, async (req, res) => {
 })
 
 router.get("/:userID", validateGetUser, async (req, res) => {
+    console.log("get user ran")
+
     // body has None
     const userOBJ = new User();
     if (req.params.userID === 'home') {userOBJ.setUserID(await getUserIDFromToken(req))}
@@ -58,6 +65,7 @@ router.get("/:userID", validateGetUser, async (req, res) => {
 });
 
 router.get("/weightedStorePage/:amount", validateGetUser, async (req, res) => {
+    console.log("get weighted storepage ran")
     const userOBJ = new User();
     userOBJ.setUserID(await getUserIDFromToken(req))
     try {
@@ -69,6 +77,7 @@ router.get("/weightedStorePage/:amount", validateGetUser, async (req, res) => {
 })
 
 router.delete("/", validateDeleteUser, async (req, res) => {
+    console.log("delete user ran")
     // body has None
     const userOBJ = new User();
     userOBJ.setUserID(await getUserIDFromToken(req))
@@ -83,9 +92,11 @@ router.delete("/", validateDeleteUser, async (req, res) => {
 
 router.patch("/", validatePostUser, async (req, res) => {
     // body has 1..* user properties
+    console.log("update user ran")
     if (req.body.userFundsAmount) {
         return res.status(401).send("Not allowed to modify funds like this")
     }
+
     const userOBJ = new User();
     userOBJ.setUserID(await getUserIDFromToken(req))
     try {
@@ -97,6 +108,8 @@ router.patch("/", validatePostUser, async (req, res) => {
 });
 
 router.patch("/fund", validatePostUser, async (req, res) => {
+    console.log("update funds ran")
+
     // body has fundsAmount
     const userOBJ = new User();
     userOBJ.setUserID(await getUserIDFromToken(req))
@@ -114,6 +127,7 @@ router.patch("/fund", validatePostUser, async (req, res) => {
 
 router.put("/create", validatePutUser, async (req, res) => {
     // body has [email, password]
+    console.log("create user ran")
     const userOBJ = new User();
     try {
         const result = await userOBJ.createUser(req.body.email, req.body.password)

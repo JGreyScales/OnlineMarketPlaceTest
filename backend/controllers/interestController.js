@@ -37,9 +37,20 @@ class Interest {
             const query = 'SELECT tag FROM Interest WHERE tagID = ?'
             connection.query(query, [tagID], (err, results) => {
                 if (err) return reject({statusCode: 400, message:`Database query error:${err.sqlMessage}`});
-                if (results.length === 0) return reject({statusCode: 404, message:'Tag Not Found'});
+                if (results.length === 0) return resolve({statusCode: 404, message:'Tag Not Found'});
                 return resolve({statusCode: 200, data: results[0].tag})
                     
+            })
+        })
+    }
+
+    findTagID(tag){
+        return new Promise((resolve, reject) => {
+            const query = 'SELECT tagID FROM Interest WHERE tag = ?'
+            connection.query(query, [tag], (err, results) => {
+                if (err) return reject({statusCode: 400, message:`Database query error:${err.sqlMessage}`});
+                if (results.length === 0) return reject({statusCode: 404, message:'Tag Not Found'});
+                return resolve({statusCode: 200, data: results[0].tagID})
             })
         })
     }
@@ -79,7 +90,7 @@ class Interest {
     }
     
 
-    static autocompleteInterest(value){
+    autocompleteInterest(value){
         return new Promise((resolve, reject) => {
             let query = 'SELECT tag, tagID FROM Interest WHERE tag LIKE ? LIMIT 5'
             let queryTag = `%${value.toLowerCase()}%`

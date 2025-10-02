@@ -8,6 +8,7 @@ const { getUserIDFromToken } = require('../middleware/auth');
 const router = express.Router();
 
 router.get("/AC/:interestHalfFilled", validateGetInterest, async (req, res) => {
+    console.log("ran interest/AC/:interestHalfFilled")
     const InterestObj = new Interest()
     try {
         const result = await InterestObj.autocompleteInterest(req.params.interestHalfFilled)
@@ -17,14 +18,20 @@ router.get("/AC/:interestHalfFilled", validateGetInterest, async (req, res) => {
     }
 })
 
-router.get("/tag/:tagID", validateGetInterest, async (req, res) => {
+router.post("/tags", validateGetInterest, async (req, res) => {
+    console.log("get tag Name from ID ran")
     // bodyContains [tags: List]
     const InterestObj = new Interest()
+    const returnData = []
     try {
-        const result = await InterestObj.findTagName(req.params.tagID)
-        return res.status(result.statusCode).json(result)
+        for (tagID of req.body.tags) {
+            const result = await InterestObj.findTagName(tagID)
+            if (result.data) { returnData.push(result.data) }
+            
+        }
+        return res.status(200).json(returnData)
     } catch (error) {
-        return res.status(error.status).send(error.message)
+        return res.status(error.statusCode || 400).send(error.message)
     }
 })
 

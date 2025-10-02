@@ -16,14 +16,15 @@ import {
 } from 'react-native';
 import SessionStorage from 'react-native-session-storage';
 import { GlobalStyles, colors } from '../functions/globalStyleSheet';
-import * as ImagePicker from 'expo-image-picker';
+import { CommonActions } from '@react-navigation/native';
+import navigateNewPage from '../functions/NavigateNewScreen';
 
 
 const MAX_BIO_LENGTH = 250;
 const MAX_USERNAME_LENGTH = 20;
 const MAX_INTERESTS = 5;
 
-export default function UserHomePage() {
+export default function UserHomePage({navigation}) {
   const [content, setContent] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -62,24 +63,14 @@ export default function UserHomePage() {
 
             if (interestResponse.ok) {
                 const interestData = await interestResponse.json();
-            
-                const tagStrings = await Promise.all(
-                    interestData.data.map(async tagID => {
-                        const tagResponse = await fetch(`http://localhost:3000/interest/tag/${tagID}`, {method: 'GET', headers: { Authorization: sessionToken }});
-                        if (!tagResponse.ok) {
-                            throw new Error(`Failed to fetch tag for ID: ${tagID}`);
-                        }
-            
-                        const tagData = await tagResponse.json();
-                        return tagData.data;
-                    })
-                );
-            
+
+                const tagStringsReponse = await fetch('http://localhost:3000/interest/tags', {method: 'POST', headers: {Authorization: sessionToken, 'Content-Type': 'application/json'}, body: JSON.stringify({tags: interestData.data})})
+                const tagStrings = await tagStringsReponse.json()
                 data.userInterests = tagStrings;
             }
-            
-          setContent(data);
-          setError(null);
+          
+            setContent(data);
+            setError(null);
         } else {
           setError('Failed to fetch user home content');
           setContent(null);
@@ -105,21 +96,6 @@ export default function UserHomePage() {
     setInterestSuggestions([]);
     setModalVisible(true);
   };
-
-  const pickImage = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [1, 1],
-      quality: 0,
-      base64: true, // <- This is REQUIRED to get the image data
-    });
-  
-    if (!result.canceled) {
-      setUserPhotoInput('data:image/png;base64,' + result.assets[0].base64);
-    }
-  };
-  
 
   // Fetch interest suggestions from API when interestInput changes
   useEffect(() => {
@@ -163,7 +139,7 @@ export default function UserHomePage() {
   }, [interestInput, interests]);
 
   const addInterest = (interest) => {
-    interest = inter.data
+    // interest = interest.tag
     if (interests.length >= MAX_INTERESTS) return;
     if (interests.includes(interest)) return;
     setInterests((prev) => [...prev, interest]);
@@ -181,35 +157,41 @@ export default function UserHomePage() {
       ...prev,
       userName: userNameInput.trim(),
       userBio: userBioInput.trim(),
-      userPhoto: userPhotoInput
+      userInterests: interests
     }));
 
     try {
+
         const sessionToken = await SessionStorage.getItem('@sessionKey');
         const requestBody = {
             userName: userNameInput.trim(),
             userBio: userBioInput.trim(),
-        };
-        
-        if (userPhotoInput.trim() !== "") {
-            requestBody.userPhoto = userPhotoInput.trim();
+          };
+
+        if (interests.length > 0){
+          requestBody.interests = interests
         }
         
-        const response = await fetch('http://localhost:3000/user/', {
-            method: 'PATCH',
-            headers: {
-                'Authorization': sessionToken,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(requestBody)
-        });
+        const response = await fetch('http://localhost:3000/user/', {method: 'PATCH', headers: {'Authorization': sessionToken, 'Content-Type': 'application/json'}, body: JSON.stringify(requestBody)});
     } catch (err) {
 
     }
-
-
-
+    setInterests(interests)
   };
+
+
+  const onSignout = () => {
+    sessionStorage.removeItem('@sessionKey')
+    // clear route history & set the current display to the initialRoute
+    navigation.dispatch(
+      CommonActions.reset({
+        inedx: 0,
+        routes: [{name: 'login'}]
+      })
+    )
+  }
+
+  const onContextSwitch = (newPage) => {navigateNewPage(newPage, navigation)}
 
   if (loading) {
     return (
@@ -253,11 +235,11 @@ export default function UserHomePage() {
         {/* Button Section */}
         <View style={GlobalStyles.buttonContainer}>
           <CustomButton text="Update Profile" onPress={openModal} />
-          <CustomButton text="Browse Products" onPress={() => {}} />
-          <CustomButton text="Seller Portal" onPress={() => {}} />
-          <CustomButton text="Add Funds" onPress={() => {}} />
-          <CustomButton text="View Transactions" onPress={() => {}} />
-          <CustomButton text="Sign out" onPress={() => {}} />
+          <CustomButton text="Browse Products" onPress={() => onContextSwitch('products')} />
+          <CustomButton text="Seller Portal" onPress={() => onContextSwitch('sellerHomepage')} />
+          <CustomButton text="Add Funds" onPress={() => onContextSwitch('fundsControl')} />
+          <CustomButton text="View Transactions" onPress={() => onContextSwitch('transaction')} />
+          <CustomButton text="Sign out" onPress={onSignout} />
         </View>
       </ScrollView>
 
@@ -276,8 +258,8 @@ export default function UserHomePage() {
             <Text style={GlobalStyles.modalTitle}>Update Profile</Text>
 
             {/* User Photo URL input */}
-            <Text style={GlobalStyles.inputLabel}>User Photo</Text>
-            <Button style={GlobalStyles.input} value={userPhotoInput} onPress={pickImage}/>
+            {/* <Text style={GlobalStyles.inputLabel}>User Photo</Text> */}
+            {/* <Button style={GlobalStyles.input} value={userPhotoInput} onPress={pickImage}/> */}
 
             {/* User Name */}
             <Text style={GlobalStyles.inputLabel}>User Name</Text>
