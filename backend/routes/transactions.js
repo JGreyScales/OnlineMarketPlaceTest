@@ -51,7 +51,7 @@ router.get("/:transID", validateGetTransaction, async (req, res) => {
 
 router.post("/transactionList", validatePostTransaction, async (req, res) => {
     console.log('ran get transactionList')
-    // bodyContains 1..*
+    // bodyContains 0..*
     // possibleContains = [productID, sellerID, transactionID]
     const userID = await getUserIDFromToken(req)
     const transactionListOBJ = new TransactionList()
