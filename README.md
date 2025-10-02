@@ -6,9 +6,9 @@ A simple project to occupy time.
     - [x] user password must be encrypted
     - [x] user must be able to authenticte with an existing account
     - [x] user must be denied if authentication fails
-    - [] must allow user to delete an account
+    - [ ] must allow user to delete an account
     - [x] must allow user to modify an account
-    - [] must allow users to view their purchase history
+    - [ ] must allow users to view their purchase history
 - [ ] must allow seller to post a product
     - [ ] must allow seller to set a location
     - [ ] must allow seller to set a price
