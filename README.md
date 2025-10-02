@@ -4,7 +4,7 @@ A simple project to occupy time.
 # Goals
 - [x] must allow user to create an account
     - [x] user password must be encrypted
-    - [x] user must be able to authenticte with an existing account
+    - [x] user must be able to authenticate with an existing account
     - [x] user must be denied if authentication fails
     - [ ] must allow user to delete an account
     - [x] must allow user to modify an account
