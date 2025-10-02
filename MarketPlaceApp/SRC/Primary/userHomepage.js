@@ -18,6 +18,7 @@ import SessionStorage from 'react-native-session-storage';
 import { GlobalStyles, colors } from '../functions/globalStyleSheet';
 import { CommonActions } from '@react-navigation/native';
 import navigateNewPage from '../functions/NavigateNewScreen';
+import { CustomButton } from '../functions/CustomButton';
 
 
 const MAX_BIO_LENGTH = 250;
@@ -348,10 +349,3 @@ export default function UserHomePage({navigation}) {
     </>
   );
 }
-
-// Custom button component
-const CustomButton = ({ text, onPress }) => (
-  <TouchableOpacity style={GlobalStyles.button} onPress={onPress}>
-    <Text style={GlobalStyles.buttonText}>{text}</Text>
-  </TouchableOpacity>
-);

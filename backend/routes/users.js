@@ -22,7 +22,7 @@ router.post("/authenticate", async (req, res) => {
     }
 });
 
-router.get("/funds", validateGetUser, async (req, res) => {
+router.get("/fund", validateGetUser, async (req, res) => {
     console.log("funds ran")
 
     // body has None
