@@ -286,7 +286,6 @@ class User {
                 return resolve({statusCode: 200, data: results})
             })
         })
-
     }    
 }
 
