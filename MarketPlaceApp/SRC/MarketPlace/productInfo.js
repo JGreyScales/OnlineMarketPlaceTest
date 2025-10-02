@@ -74,14 +74,16 @@ export default function ProductInfo({navigation}) {
     
             <View style={GlobalStyles.productDetailInfo}>
             <Text style={GlobalStyles.productDetailTitle}>{productContent.productName}</Text>
-            <Text style={GlobalStyles.productDetailSeller}>Sold by: {productContent.storepageName}</Text>
+            <TouchableOpacity onPress={() => {}}>
+                <Text style={GlobalStyles.productDetailSeller}>Sold by: {productContent.storepageName}</Text>
+            </TouchableOpacity>
             <Text style={GlobalStyles.productDetailPrice}>${parseFloat(productContent.productPrice).toFixed(2)}</Text>
             <Text style={GlobalStyles.productDetailRating}>⭐ {parseFloat(productContent.productRating).toFixed(1)}</Text>
     
             <Text style={GlobalStyles.productDetailDescription}>{productContent.productBio}</Text>
     
             <View style={{ marginTop: 20 }}>
-                <Text style={GlobalStyles.sectionTitle}>Interests</Text>
+                <Text style={GlobalStyles.sectionTitle}>Tags</Text>
                 <View style={GlobalStyles.interestsList}>
                 {productContent.interests.map((interest, idx) => (
                     <View key={idx} style={GlobalStyles.interestChip}>
