@@ -53,6 +53,56 @@ class TransactionList {
         });
     }
 
+    populateTransactionListWithFilter(valueDict, userID) {
+        return new Promise((resolve, reject) => {
+            let query = "SELECT transactionID, userID, sellerID, productID, priceAmount, date FROM Transaction WHERE userID = ?";
+            const filterList = [];
+            const valuesList = [userID];
+    
+            for (let field in valueDict) {
+                filterList.push(` ${field} = ?`);
+                valuesList.push(valueDict[field]);
+            }
+    
+            if (filterList.length > 0) {
+                query += " AND" + filterList.join(" AND");
+            }
+            query += " ORDER BY date DESC LIMIT 200"
+            
+            connection.query(query, valuesList, async (err, results) => {
+                if (err) return reject({ statusCode: 400, message: `Database query error: ${err.sqlMessage}` });
+                if (results.length === 0) return reject({ statusCode: 404, message: `No transactions found` });
+    
+                try {
+                    const transactionData = await Promise.all(results.map(async result => {
+                        const transactionOBJ = new Transaction(
+                            userID,
+                            result.sellerID,
+                            result.productID,
+                            result.priceAmount,
+                            result.date,
+                            result.transactionID
+                        );
+                        await transactionOBJ.populateAll();
+                        return {
+                            sellerName: transactionOBJ.getSellerName(),
+                            sellerID: transactionOBJ.getSellerID(),
+                            productName: transactionOBJ.getProductName(),
+                            productID: transactionOBJ.getProductID(),
+                            priceAmount: transactionOBJ.getPriceAmount(),
+                            date: transactionOBJ.getDate(),
+                            ID: transactionOBJ.getTransactionID()
+                        };
+                    }));
+                    return resolve({ statusCode: 200, data: transactionData });
+                } catch (e) {
+                    return reject({ statusCode: 500, message: `Error processing transactions: ${e.message}` });
+                }
+            });
+        });
+    }
+    
+
     getTransactions() {
         return this.#transactions;
     }

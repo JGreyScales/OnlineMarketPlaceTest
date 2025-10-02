@@ -52,7 +52,6 @@ class Transaction {
             connection.query(query, [this.#userID], (err, results) => {
                 if (err) return reject(err);
                 if (results.length === 0) return resolve('');
-                console.log(results)
                 this.#userName = results[0].userName;
                 resolve();
             })

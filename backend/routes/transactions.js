@@ -1,5 +1,6 @@
 const { TransactionList } = require('../controllers/Transactions/transactionController');
-const {validateGetTransaction} = require('../validation/validateTransaction')
+const {validateGetTransaction, validatePostTransaction} = require('../validation/validateTransaction')
+const { getUserIDFromToken } = require('../middleware/auth');
 const express = require('express');
 const router = express.Router();
 
@@ -47,5 +48,21 @@ router.get("/:transID", validateGetTransaction, async (req, res) => {
         return res.status(400).send(error.message)
     }
 });
+
+router.post("/transactionList", validatePostTransaction, async (req, res) => {
+    console.log('ran get transactionList')
+    // bodyContains 1..*
+    // possibleContains = [productID, sellerID, transactionID]
+    const userID = await getUserIDFromToken(req)
+    const transactionListOBJ = new TransactionList()
+    try {
+        const result = await transactionListOBJ.populateTransactionListWithFilter(req.body, userID)
+        return res.status(result.statusCode).send(result.data)
+    } catch (error) {
+        console.log(error)
+        return res.status(error.statusCode || 400).send(error.message)
+    }
+
+})
 
 module.exports = router;
