@@ -18,7 +18,7 @@ A simple project to occupy time.
     - [ ] must allow seller to see their selling history
 - [ ] Users must be allowed to view an entire sellers page
 - [ ] When a product is sold, the seller should get 0.97x of the profit directly to their user account
-- [ ] have a mimiced screen for withdrawing money
+- [x] have a mimiced screen for withdrawing money
 - [x] must allow user upload "money" to the site
 - [ ] must allow user to spend their money on the site
 - [x] must use the node.JS server for data requests
