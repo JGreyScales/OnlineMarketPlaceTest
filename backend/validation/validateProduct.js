@@ -22,7 +22,6 @@ async function validatePostProduct(req, res, next){
     try {
         await validateGetProduct(req, res, (err) => {
             if (err) return res.status(err.status || 400).json(err);
-
             if (req.body){
                 Object.keys(req.body).forEach((key) => {
                     if (!ALLOWED_FIELDS.includes(key)) {
@@ -53,7 +52,7 @@ async function validatePostProduct(req, res, next){
             }
 
             if (req.body.rating){
-                if (!isInt(req.body.rating) || parseInt(req.body.rating) < Product.MIN_RATING_VALUE || parseInt(req.body.rating) > Product.MAX_RATING_VALUE){
+                if (isNaN(parseInt(req.body.rating)) || parseInt(req.body.rating) < Product.MIN_RATING_VALUE || parseInt(req.body.rating) > Product.MAX_RATING_VALUE){
                     return res.status(400).json({error: `Invalid rating`})
                 }
             }

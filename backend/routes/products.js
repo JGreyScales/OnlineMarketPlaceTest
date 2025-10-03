@@ -6,15 +6,15 @@ const db = require('../models/db')
 const express = require("express");
 const router = express.Router();
 
-router.get("/:productID/purchase", validatePostProduct, async(req, res) => {
+router.get("/:productID/purchase", validateGetProduct, async(req, res) => {
     console.log("ran purchase product")
     const buyerID = await getUserIDFromToken(req)
     const productListOBJ = new ProductList()
     try {
-        const result = productListOBJ.purchaseProduct(buyerID, req.params.productID)
+        const result = await productListOBJ.purchaseProduct(buyerID, req.params.productID)
         return res.status(result.statusCode).json(result)
     } catch (error){
-        return res.status(error.status).send(error.message)
+        return res.status(error.statusCode || 400).send(error.message)
     }
 })
 
@@ -78,10 +78,10 @@ router.patch("/:productID", validatePostProduct, async (req, res) => {
 router.post("/:productID/rating", validatePostProduct, async (req, res) => {
     console.log("rate product ran")
     // body contains [rating]
-    const userID = getUserIDFromToken(req);
+    const userID = await getUserIDFromToken(req);
     const productListOBJ = new ProductList()
     try {
-        const result = await productListOBJ.createProductRating(req.params.productID, req.body.rating, userID)
+        const result = await productListOBJ.createProductRating(parseInt(req.params.productID), parseInt(req.body.rating), userID)
         return res.status(result.statusCode).json(result)
     } catch (error) {
         return res.status(400).send(error.message)

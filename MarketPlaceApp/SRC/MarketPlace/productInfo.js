@@ -64,12 +64,52 @@ export default function ProductInfo({navigation}) {
        
     }
 
-    const onPurchase = () => {
+    const onPurchase = async () => {
+        try {
+            setPurchaseModal(false)
+            const sessionToken = await SessionStorage.getItem('@sessionKey');
+            const response = fetch(`http://localhost:3000/product/${productContent.productID}/purchase`, {
+                method: 'GET',
+                headers: {
+                    Authorization: sessionToken
+                }
+            })
 
+            if (!response.ok){
+                return;
+            }
+        } catch (error) {
+            setError('Purchase Error:' + error.message)
+        }
     }
 
-    const onSubmit = () => {
+    const onSubmit = async () => {
+        try {
+            setReviewModal(false)
+            const sessionToken = await SessionStorage.getItem('@sessionKey')
 
+            // if the content does not meet requirements
+            if (isNaN(parseInt(userRatingOfProduct)) || parseInt(userRatingOfProduct) < 1 || parseInt(userRatingOfProduct) > 5){
+                return;
+            }
+            const requestBody = {
+                rating: parseInt(userRatingOfProduct)
+            }
+
+            const response = fetch(`http://localhost:3000/product/${productContent.productID}/rating`, {
+                method: 'POST',
+                headers : {
+                    'CONTENT-TYPE': 'application/json',
+                    Authorization: sessionToken
+                },
+                body: JSON.stringify(requestBody)
+            })
+            setUserRatingOfProduct(0)
+            grabProductDetails()
+        } catch (error) {
+            setError('Error rating product:' + error.message)
+        }
+       
     }
 
     useEffect(() => {
@@ -163,7 +203,7 @@ export default function ProductInfo({navigation}) {
           </View>
         </Modal>
 
-        {/* purchase Product Modal */}
+        {/* Rate Product Modal */}
         <Modal visible={reviewModal} transparent animationType="slide">
           <View style={GlobalStyles.modalWrapper}>
             <View style={GlobalStyles.modalContainer}>
@@ -180,7 +220,7 @@ export default function ProductInfo({navigation}) {
                     />
                 <TouchableOpacity
                     style={[GlobalStyles.button, GlobalStyles.modalButtonCancel]}
-                    onPress={() => {setReviewModal(false)}}
+                    onPress={() => {setReviewModal(false); setUserRatingOfProduct(0)}}
                 >
                     <Text style={GlobalStyles.modalButtonTextCancel}>Cancel</Text>
                 </TouchableOpacity>

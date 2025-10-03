@@ -1,6 +1,6 @@
 const {Product} = require('./productController')
 const connection = require("../../models/db")
-const Transaction = require("../Transactions/transactionClass")
+const {Transaction} = require("../Transactions/transactionClass")
 
 class ProductList {
     constructor(){}
@@ -25,31 +25,51 @@ class ProductList {
         })
     }
 
-    purchaseProduct(buyerID, productID){
-        return new Promise(async (resolve, reject) => {
-            const ProductOBJ = await this.getProduct(productID)
-            let userFunds = 0.00
-            // verify the user has the funds to purchase it
-            const userFundQuery = "SELECT userFundsAmount FROM User WHERE userID = ?"
-            await connection.query(userFundQuery, [buyerID], (err, results) => {
-                if (err) return reject({statusCode: 400, message:`Database query error:${err.sqlMessage}`});
-                if (results.length === 0) return reject({statusCode: 404, message:'User not found'});
-                userFunds = results[0].userFundsAmount
-            })
-
-            // remove the funds from the user account
-            const updateUserFundQuery = "UPDATE User SET userFundsAmount = userFundsAmount - ? WHERE userID = ?"
-            connection.query(updateUserFundQuery, [productOBJ.productPrice, buyerID], (err, results) => {
-                if (err) return reject({statusCode: 400, message:`Database query error:${err.sqlMessage}`});
-            })
-
-            // create a transaction log
+    async purchaseProduct(buyerID, productID) {
+        try {
+            // Fetch product details
+            const productOBJ = (await this.getProduct(productID)).data;
+    
+            // Verify if the user has sufficient funds
+            const userFundQuery = "SELECT userFundsAmount FROM User WHERE userID = ?";
+            const userFundsResult = await new Promise((resolve, reject) => {
+                connection.query(userFundQuery, [buyerID], (err, results) => {
+                    if (err) return reject({ statusCode: 400, message: `Database query error: ${err.sqlMessage}` });
+                    if (results.length === 0) return reject({ statusCode: 404, message: 'User not found' });
+                    resolve(results);
+                });
+            });
+    
+            const userFunds = parseFloat(userFundsResult[0].userFundsAmount);
+            if (userFunds < parseFloat(productOBJ.productPrice)) {
+                console.log('User does not have enough funds');
+                throw { statusCode: 400, message: "User does not have enough funds" };
+            }
+            console.log('User does have enough funds');
+    
+            // Remove the funds from the user's account
+            const updateUserFundQuery = "UPDATE User SET userFundsAmount = userFundsAmount - ? WHERE userID = ?";
+            await new Promise((resolve, reject) => {
+                connection.query(updateUserFundQuery, [productOBJ.productPrice, buyerID], (err, results) => {
+                    if (err) return reject({ statusCode: 400, message: `Database query error: ${err.sqlMessage}` });
+                    resolve(results);
+                });
+            });
+    
+            // Create a transaction log
             const date = new Date().toISOString().split('T')[0];
-            const TransactionOBJ = Transaction(buyerID, productOBJ.sellerID, productID, productOBJ.productPrice, date);
-            await TransactionOBJ.submitNewTransactionLog()
-            resolve({statusCode: 200})
-        })
+            const TransactionOBJ = new Transaction(buyerID, productOBJ.sellerID, productID, productOBJ.productPrice, date);
+            await TransactionOBJ.submitNewTransactionLog();
+    
+            // Successfully purchased
+            return { statusCode: 200 };
+    
+        } catch (error) {
+            // Handle any errors that may have occurred
+            return { statusCode: 500, message: error};
+        }
     }
+    
 
     static productExists(productID){
         return new Promise((resolve, reject) => {
@@ -62,24 +82,40 @@ class ProductList {
 
     }
 
-    async createProductRating(productID, rating, userID){
-        return new Promise((resolve, reject) => {
-            query = "INSERT INTO Rating (productID, rating, userID, verifiedBuyer) VALUES (?, ?, ?, ?)"
-            verifiedBuyerQuery = "SELECT 1 WHERE EXISTS (SELECT 1 FROM Transaction WHERE userID = ? AND productID = ?)"
-            const verifiedBuyer = false
-
-            connection.query(verifiedBuyerQuery, [userID, productID], (err, results) => {
-                if (err) return reject({statusCode: 400, message: `Database query error:${err.sqlMessage}`});
-                if (results.length === 1) verifiedBuyer = true;
-            })
-
-            connection.query(query, [productID, rating, userID, verifiedBuyer], (err, results) => {
-                if (err) return reject({statusCode: 400, message: `Database query error:${err.sqlMessage}`});
-                return resolve({statusCode: 202, message: `rating added`})
-            })
-
-        })
+    async createProductRating(productID, rating, userID) {
+        try {
+            // Query to check if the user is a verified buyer
+            const verifiedBuyerQuery = "SELECT 1 FROM Transaction WHERE userID = ? AND productID = ?";
+            const verifiedBuyer = await new Promise((resolve, reject) => {
+                connection.query(verifiedBuyerQuery, [userID, productID], (err, results) => {
+                    if (err) return reject({ statusCode: 400, message: `Database query error: ${err.sqlMessage}` });
+                    if (results.length === 1) {
+                        return resolve(true);
+                    } else {
+                        return resolve(false);
+                    }
+                });
+            });
+    
+            // Insert the rating into the database
+            const query = "INSERT INTO Rating (productID, rating, userID, verifiedBuyer) VALUES (?, ?, ?, ?)";
+            await new Promise((resolve, reject) => {
+                connection.query(query, [productID, rating, userID, verifiedBuyer], (err, results) => {
+                    if (err) return reject({ statusCode: 400, message: `Database query error: ${err.sqlMessage}` });
+                    resolve(results);
+                });
+            });
+    
+            // Return success message
+            return { statusCode: 202, message: "Rating added" };
+        } catch (err) {
+            // Handle any errors
+            console.log(err);
+            return { statusCode: 400, message: `Database query error: ${err.message || err.sqlMessage}` };
+        }
     }
+    
+    
 
     async patchProduct(valuesDict, productID){
         return new Promise((resolve, reject) => {

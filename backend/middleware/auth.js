@@ -47,7 +47,9 @@ function authenticateToken(req) {
             if (req.params.productID) {
                 const sellerID = Product.getSellerID(req.params.productID)
                 if (payload.userID !== sellerID) {
-                    if (req.method === 'GET' && req.route.path === '/:productID'){
+                    if (req.method === 'GET' && (req.route.path === '/:productID' || req.route.path === '/:productID/purchase')){
+                        return resolve(true)
+                    } else if (req.method === 'POST' && req.route.path === '/:productID/rating') {
                         return resolve(true)
                     }
                     console.log('Failed on productSeller object permission checking')
