@@ -1,5 +1,3 @@
-MVC-style preplanning below
-
 # Package Requirements
 - JEST
 - SUPERTEST
