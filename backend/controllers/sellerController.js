@@ -27,6 +27,17 @@ class Seller {
         })
     }
 
+    getSellerRating(){
+        return new Promise((resolve, reject) => {
+            let query = `SELECT AVG(r.rating) as rating FROM Rating r JOIN Product p ON p.productID = r.productID WHERE p.sellerID = ?`
+            connection.query(query, [this.#sellerID], (err, results) => {
+                if (err) return reject({statusCode: 400, message: `Database query error: ${err.sqlMessage}`});
+                if (results.length === 0) return reject({statusCode: 404, message: 'Seller not rated', rating: 0.0});
+                return resolve({statusCode: 200, rating: parseFloat(results[0].rating).toFixed(1)})
+            })
+        })
+    }
+
     getSellerProducts(amount){
         return new Promise((resolve, reject) => {
             let query = "SELECT productID FROM Product WHERE sellerID = ? limit ?"

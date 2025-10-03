@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Modal, FlatList, TextInput, View, ActivityIndicator, TouchableOpacity, Text, Image, ScrollView } from 'react-native';
+import { Modal, TextInput, View, ActivityIndicator, TouchableOpacity, Text, Image, ScrollView } from 'react-native';
 import { CustomButton } from '../functions/CustomButton';
 import { useRoute } from '@react-navigation/native';
 import { GlobalStyles, colors } from '../functions/globalStyleSheet';
@@ -151,7 +151,7 @@ export default function ProductInfo({navigation}) {
         
                 <View style={GlobalStyles.productDetailInfo}>
                 <Text style={GlobalStyles.productDetailTitle}>{productContent.productName}</Text>
-                <TouchableOpacity onPress={() => {}}>
+                <TouchableOpacity onPress={() => navigation.navigate('SellerPage', {sellerID: productContent.sellerID})}>
                     <Text style={GlobalStyles.productDetailSeller}>Sold by: {productContent.storepageName}</Text>
                 </TouchableOpacity>
                 <Text style={GlobalStyles.productDetailPrice}>${parseFloat(productContent.productPrice).toFixed(2)}</Text>

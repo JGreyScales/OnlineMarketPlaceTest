@@ -55,12 +55,12 @@ class Product {
 
     populateProductRating(){
         return new Promise((resolve, reject) => {
-            let query = "SELECT rating FROM Rating WHERE productID = ? LIMIT 200"
+            let query = "SELECT AVG(rating) as rating FROM Rating WHERE productID = ?"
             connection.query(query, [this.#productID], (err, results) => {
                 if (err) return reject(err);
                 if (results.length === 0) return resolve(0);
-                const totalRating = results.reduce((sum, rating) => sum + rating.rating, 0)
-                this.#productRating = (totalRating / results.length).toFixed(1)
+                console.log(results[0].rating)
+                this.#productRating = (parseFloat(results[0].rating)).toFixed(1)
                 resolve()
             })
         })

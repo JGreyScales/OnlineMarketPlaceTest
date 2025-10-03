@@ -29,9 +29,21 @@ router.get("/:sellerID", validateGetSeller, async (req, res) => {
         return res.status(result.statusCode).json(result)
     } catch (error){
         return res.status(400).send(error.message)
-    }
-    
+    } 
 });
+
+router.get("/:sellerID/rating", validateGetSeller, async (req, res) => {
+    console.log("get seller rating ran")
+    const sellerObj = new Seller()
+    if (req.params.sellerID === 'home') {sellerObj.setSellerID(await getUserIDFromToken(req))}
+    else {sellerObj.setSellerID(req.params.sellerID)}
+    try {
+        const result = await sellerObj.getSellerRating()
+        return res.status(result.statusCode).json(result)
+    } catch (error){
+        return res.status(400).send(error.message)
+    } 
+})
 
 
 

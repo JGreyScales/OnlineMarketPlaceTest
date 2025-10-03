@@ -329,5 +329,86 @@ export const GlobalStyles = StyleSheet.create({
       color: colors.text,
       lineHeight: 22,
     },
+
+
+      // Store Page Styles
+  storePageContainer: {
+    flex: 1,
+    padding: 20,
+    backgroundColor: colors.background,
+  },
+  storeHeader: {
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  storeImage: {
+    width: 120,
+    height: 120,
+    borderRadius: 60,
+    borderWidth: 2,
+    borderColor: colors.primary,
+    marginBottom: 15,
+    backgroundColor: '#fff',
+  },
+  storeName: {
+    fontSize: 26,
+    fontWeight: '700',
+    color: colors.text,
+    marginBottom: 5,
+    textAlign: 'center',
+  },
+  storeRating: {
+    fontSize: 16,
+    color: '#FFA000', // Amber
+    marginBottom: 10,
+    textAlign: 'center',
+  },
+  storeBio: {
+    fontSize: 16,
+    color: colors.text,
+    textAlign: 'center',
+    paddingHorizontal: 20,
+    marginBottom: 20,
+  },
+
+  // Store Items Section
+  storeItemsSection: {
+    flex: 1,
+  },
+  storeItemsGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    paddingBottom: 20,
+  },
+  storeItemCard: {
+    width: '48%',
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: colors.border,
+    padding: 10,
+    marginBottom: 12,
+    elevation: 2,
+  },
+  storeItemImage: {
+    width: '100%',
+    height: 120,
+    borderRadius: 8,
+    resizeMode: 'cover',
+    marginBottom: 8,
+  },
+  storeItemTitle: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: colors.text,
+    marginBottom: 4,
+  },
+  storeItemPrice: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: colors.primary,
+  },
+
   
 });

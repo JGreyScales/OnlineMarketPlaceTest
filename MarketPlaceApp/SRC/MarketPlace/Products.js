@@ -1,5 +1,5 @@
-import { Modal, FlatList, TextInput, View, TouchableOpacity, Text, Image } from 'react-native';
-import { GlobalStyles, colors } from '../functions/globalStyleSheet';
+import {FlatList, View, TouchableOpacity, Text, Image } from 'react-native';
+import { GlobalStyles} from '../functions/globalStyleSheet';
 import navigateNewPage from '../functions/NavigateNewScreen';
 import SessionStorage from 'react-native-session-storage';
 import { CustomButton } from '../functions/CustomButton';
