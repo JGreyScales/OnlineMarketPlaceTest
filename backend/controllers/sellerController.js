@@ -1,5 +1,5 @@
 const connection = require("../models/db")
-const ProductList = require("../controllers/Product/product")
+const {ProductList} = require("../controllers/Product/product")
 class Seller {
     #sellerID
     #productList = []
@@ -20,8 +20,7 @@ class Seller {
             connection.query(query, [this.#sellerID], (err, results) => {
                 if (err) return reject({statusCode: 400, message: `Database query error: ${err.sqlMessage}`});
                 if (results.length === 0) return reject({statusCode: 404, message: 'Seller not found'});
-            
-                const {storepageBio, storepagePhoto, storepageName} = results
+                const {storepageBio, storepagePhoto, storepageName} = results[0]
                 return resolve({statusCode: 200, storepageBio: storepageBio, storepagePhoto: storepagePhoto, storepageName: storepageName})
                 })
         })
@@ -38,27 +37,18 @@ class Seller {
         })
     }
 
-    getSellerProducts(amount){
+    getSellerProducts(amount, pageNumber){
         return new Promise((resolve, reject) => {
-            let query = "SELECT productID FROM Product WHERE sellerID = ? limit ?"
-            const productIDList = []
-            connection.query(query, [this.#sellerID, amount], (err, results) => {
+            const query = `SELECT DISTINCT productID, productImage, productName, productPrice, productID
+                             FROM Product WHERE sellerID = ? LIMIT ? OFFSET ?`
+            const productListOBJ = new ProductList()
+
+            const offset = parseInt(pageNumber) * parseInt(amount)
+            connection.query(query, [this.#sellerID, parseInt(amount), offset], async (err, results) => {
                 if (err) return reject({statusCode: 400, message: `Database query error: ${err.sqlMessage}`});
                 if (results.length === 0) return reject({statusCode: 404, message: 'Products not found'});
-                results.map(Product => productIDList.push(Product.productID))
+                return resolve({statusCode: 200, data: results})                
             })
-
-            const productListOBJ = new ProductList()
-            productIDList.forEach((ID) => {
-                try {
-                    const result = productListOBJ.getProduct(ID)
-                    this.#productList.push(result.data)
-                } catch (error) {
-                    return reject({statusCode: 400, message: error.message});
-                }
-            })
-
-            return resolve({statusCode: 200, data: this.#productList})
         })
 
     }

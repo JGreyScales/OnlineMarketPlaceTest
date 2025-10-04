@@ -151,7 +151,7 @@ export default function ProductInfo({navigation}) {
         
                 <View style={GlobalStyles.productDetailInfo}>
                 <Text style={GlobalStyles.productDetailTitle}>{productContent.productName}</Text>
-                <TouchableOpacity onPress={() => navigation.navigate('SellerPage', {sellerID: productContent.sellerID})}>
+                <TouchableOpacity onPress={() => navigation.navigate('sellerHomepage', {sellerID: productContent.sellerID})}>
                     <Text style={GlobalStyles.productDetailSeller}>Sold by: {productContent.storepageName}</Text>
                 </TouchableOpacity>
                 <Text style={GlobalStyles.productDetailPrice}>${parseFloat(productContent.productPrice).toFixed(2)}</Text>

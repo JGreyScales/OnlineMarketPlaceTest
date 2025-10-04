@@ -91,7 +91,7 @@ export default function UserHomePage({navigation}) {
   const openModal = () => {
     setUserNameInput(content?.userName || '');
     setUserBioInput(content?.userBio || '');
-    setUserPhotoInput(content?.userPhoto ? `data:image/png;base64,${content.userPhoto}` : '');
+    setUserPhotoInput(content?.userPhoto ? content.userPhoto : '');
     setInterests(content?.userInterests || []); // assuming interests array exists
     setInterestInput('');
     setInterestSuggestions([]);

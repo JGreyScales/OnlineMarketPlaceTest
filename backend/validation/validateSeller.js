@@ -10,7 +10,7 @@ async function validateGetSeller(req, res, next){
     }
 
     if (req.params.sellerID){
-        if (isNaN(req.params.sellerID) || req.params.sellerID < 1){
+        if (isNaN(parseInt(req.params.sellerID)) || req.params.sellerID < 1){
             if (req.params.sellerID !== 'home'){
                 return res.status(400).json({error: `Invalid sellerID`})
             }
@@ -18,8 +18,14 @@ async function validateGetSeller(req, res, next){
     }
 
     if (req.params.amount){
-        if (isNaN(req.params.amount) || req.params.amount < 1){
+        if (isNaN(parseInt(req.params.amount)) || req.params.amount < 1){
             return res.status(400).json({error: 'Invalid get amount'})
+        }
+    }
+
+    if (req.params.pageNumber){
+        if (isNaN(parseInt(req.params.pageNumber)) || req.params.pageNumber < 0){
+            return res.status(400).json({error: 'Invalid page number'})
         }
     }
 

@@ -5,16 +5,16 @@ const express = require("express");
 const router = express.Router();
 
 
-router.get("/:sellerID/products/:amount", validateGetSeller, async (req, res) => {
+router.get("/:sellerID/products/:amount/page/:pageNumber", validateGetSeller, async (req, res) => {
     console.log("get x amount of sellers products ran")
     const sellerObj = new Seller()
     if (req.params.sellerID === 'home') {sellerObj.setSellerID(await getUserIDFromToken(req))}
     else {sellerObj.setSellerID(req.params.sellerID)}
     try {
-        const result = sellerObj.getSellerProducts(req.params.amount)
+        const result = await sellerObj.getSellerProducts(req.params.amount, req.params.pageNumber)
         return res.status(result.statusCode).json(result)
     } catch (error) {
-        return res.status(400).send(error.message)
+        return res.status(error.statusCode).send(error.message)
     }
 
 });
