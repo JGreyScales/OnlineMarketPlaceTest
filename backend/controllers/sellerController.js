@@ -40,11 +40,8 @@ class Seller {
     getSellerProducts(amount, pageNumber){
         return new Promise((resolve, reject) => {
             const query = `SELECT DISTINCT productID, productImage, productName, productPrice, productID
-                             FROM Product WHERE sellerID = ? LIMIT ? OFFSET ?`
-            const productListOBJ = new ProductList()
-
-            const offset = parseInt(pageNumber) * parseInt(amount)
-            connection.query(query, [this.#sellerID, parseInt(amount), offset], async (err, results) => {
+                             FROM Product WHERE sellerID = ? LIMIT ?`
+            connection.query(query, [this.#sellerID, parseInt(amount)], async (err, results) => {
                 if (err) return reject({statusCode: 400, message: `Database query error: ${err.sqlMessage}`});
                 if (results.length === 0) return reject({statusCode: 404, message: 'Products not found'});
                 return resolve({statusCode: 200, data: results})                

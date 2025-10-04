@@ -76,7 +76,7 @@ export default function SellerPage({navigation}){
         try {
             const sessionToken = await SessionStorage.getItem('@sessionKey');
             // fetch 25 products from the seller
-            const response = await fetch(`http://localhost:3000/seller/${sellerID}/products/25/page/${currentPage}`, {
+            const response = await fetch(`http://localhost:3000/seller/${sellerID}/products/999`, {
                 method: 'GET',
                 headers: {
                     Authorization: sessionToken
