@@ -7,14 +7,13 @@ class ProductList {
 
     createProduct(valuesDict){
         return new Promise((resolve, reject) => {
-            const query ="INSERT INTO Product ("
+            let query ="INSERT INTO Product ("
             const columnNameList = [];
             const valuesList = [];
             for (let field in valuesDict) {
                 columnNameList.push(field);
                 valuesList.push(valuesDict[field]);
             }
-
             query += columnNameList.join(', ') + ") VALUES (";
             query += valuesList.map(() => '?').join(', ') + ")";
 
@@ -178,7 +177,7 @@ class ProductList {
         })
     }
 
-    static userIsSeller(sellerID) {
+    userIsSeller(sellerID) {
         return new Promise((resolve, reject) => {
             const query = "SELECT 1 WHERE EXISTS (SELECT 1 FROM Seller WHERE sellerID = ?)"
             connection.query(query, [sellerID], (err, results) => {

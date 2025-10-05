@@ -32,7 +32,7 @@ router.get("/:sellerID", validateGetSeller, async (req, res) => {
 });
 
 router.get("/:sellerID/interests", validateGetSeller, async (req, res) => {
-    console.log("get seller ran")
+    console.log("get seller interests ran")
     const sellerObj = new Seller()
     if (req.params.sellerID === 'home') {sellerObj.setSellerID(await getUserIDFromToken(req))}
     else {sellerObj.setSellerID(req.params.sellerID)}
@@ -59,7 +59,8 @@ router.get("/:sellerID/rating", validateGetSeller, async (req, res) => {
 
 
 
-router.put("/create", validatePostSeller, async(req, res) => {
+router.put("", validatePostSeller, async(req, res) => {
+    console.log('create seller ran')
     const sellerObj = new Seller()
     sellerObj.setSellerID(await getUserIDFromToken(req))
     try{
@@ -70,7 +71,8 @@ router.put("/create", validatePostSeller, async(req, res) => {
     }
 })
 
-router.patch("/update", validatePostSeller, async (req, res) => {
+router.patch("", validatePostSeller, async (req, res) => {
+    console.log('update seller ran')
     // body contains [storepageBio, storepagePhoto, storepageName]
     const sellerObj = new Seller()
     sellerObj.setSellerID(await getUserIDFromToken(req))
@@ -84,7 +86,8 @@ router.patch("/update", validatePostSeller, async (req, res) => {
 
 
 
-router.delete("/delete", validateDeleteSeller, async (req, res) => {
+router.delete("", validateDeleteSeller, async (req, res) => {
+    console.log('delete seller ran')
     const sellerOBJ = new Seller()
     sellerOBJ.setSellerID(await getUserIDFromToken(req))
     try {

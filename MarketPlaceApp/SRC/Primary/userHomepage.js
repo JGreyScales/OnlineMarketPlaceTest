@@ -258,15 +258,11 @@ export default function UserHomePage({navigation}) {
           <View style={GlobalStyles.modalContainer}>
             <Text style={GlobalStyles.modalTitle}>Update Profile</Text>
 
-            {/* User Photo URL input */}
-            {/* <Text style={GlobalStyles.inputLabel}>User Photo</Text> */}
-            {/* <Button style={GlobalStyles.input} value={userPhotoInput} onPress={pickImage}/> */}
-
             {/* User Name */}
-            <Text style={GlobalStyles.inputLabel}>User Name</Text>
+            <Text style={GlobalStyles.inputLabel}>Username</Text>
             <TextInput
               style={GlobalStyles.input}
-              placeholder="User Name"
+              placeholder="Username"
               value={userNameInput}
               onChangeText={(text) =>
                 text.length <= MAX_USERNAME_LENGTH && setUserNameInput(text)

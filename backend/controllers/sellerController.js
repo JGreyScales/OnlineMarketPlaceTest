@@ -76,7 +76,7 @@ class Seller {
 
     patchSeller(valuesDict){
         return new Promise((resolve, reject) => {
-            const query = "UPDATE Seller SET "
+            let query = "UPDATE Seller SET "
             const updates = []
             const valuesList = []
 

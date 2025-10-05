@@ -32,12 +32,12 @@ router.get("/:productID", validateGetProduct, async (req, res) => {
 
 
 
-router.put("/create", validatePostProduct, async (req, res) => {
+router.put("", validatePostProduct, async (req, res) => {
     console.log("create product ran")
     // body contains [productName, productImage, productBio, productPrice]
-    req.body.sellerID = getUserIDFromToken(req) // add sellerID to the body
+    req.body.sellerID = await getUserIDFromToken(req) // add sellerID to the body
     const productListOBJ = new ProductList()
-    if (productListOBJ.userIsSeller(req.body.sellerID)){
+    if (await productListOBJ.userIsSeller(req.body.sellerID)){
         try {
             const result = await productListOBJ.createProduct(req.body)
             return res.status(result.statusCode).json(result)

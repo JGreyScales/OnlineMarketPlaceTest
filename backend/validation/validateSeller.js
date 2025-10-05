@@ -1,7 +1,7 @@
 const { isEmpty } = require("validator");
 const {Seller} = require("../controllers/sellerController")
 const {authenticateToken} = require('../middleware/auth')
-ALLOWED_FIELDS = ['storepageBio', 'storepagePhoto', 'storepageName']
+const ALLOWED_FIELDS = ['storepageBio', 'storepagePhoto', 'storepageName']
 
 async function validateGetSeller(req, res, next){
     const isAuthenticated = await authenticateToken(req);
