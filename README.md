@@ -9,10 +9,11 @@ A simple project to occupy time.
     - [ ] must allow user to delete an account
     - [x] must allow user to modify an account
     - [x] must allow users to view their purchase history
-- [ ] must allow seller to post a product
-    - [ ] must allow seller to set a price
+- [X] must allow seller to post a product
+    - [X] must allow seller to set a price
+    - [X] must allow seller to set a productName
+    - [X] must allow seller to set a productBio
     - [ ] must allow seller to set a product image
-    - [ ] must allow seller to set an age requirement
     - [ ] must allow seller to see their selling history
 - [x] Users must be allowed to view an entire sellers page
 - [ ] When a product is sold, the seller should get 0.97x of the profit directly to their user account
