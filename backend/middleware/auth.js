@@ -33,12 +33,12 @@ function authenticateToken(req) {
                 }
             }
 
-            if (req.params.sellerID) {
+            if (req.params.sellerID && req.params.sellerID !== 'home') {
                 if (payload.userID !== parseInt(req.params.sellerID)){
                     if (req.method === 'GET' && (req.route.path === '/:sellerID/products/:amount' ||req.route.path === '/:sellerID' || req.route.path === '/:sellerID/products' || req.route.path === '/:sellerID/rating')) {
                         return resolve(true)
                     }
-
+                    console.log(req.route.path)
                     console.log('Failed on seller object permission checking')
                     return resolve(false)
                 }
