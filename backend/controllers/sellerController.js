@@ -49,6 +49,20 @@ class Seller {
         })
 
     }
+
+    getSellerInterests(){
+        return new Promise((resolve, reject) => {
+            const query = `SELECT DISTINCT i.tag 
+                            FROM Interest i 
+                            JOIN Interest_bridge ib ON i.tagID = ib.tagID
+                            WHERE ib.sellerID = ?`
+            connection.query(query, [this.#sellerID], (err, results) => {
+                if (err) reject({statusCode: 400, message: `Database query error: ${err.sqlMessage}`});
+                if (results.length === 0) reject({statusCode: 404, message: 'No interests found'});
+                return resolve({statusCode: 200, data: results})
+            })
+        })
+    }
     
     createSeller(){
         return new Promise((resolve, reject) => {

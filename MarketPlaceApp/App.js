@@ -6,6 +6,7 @@ import UserHomePage from './SRC/Primary/userHomepage';
 import ProductsPage from './SRC/MarketPlace/Products';
 import ProductInfo from './SRC/MarketPlace/productInfo';
 import SellerPage from './SRC/MarketPlace/sellerPage';
+import sellerPOVHomepage from './SRC/Primary/sellerPOVHomePage';
 import FundControlPage from './SRC/User/fundControl';
 import TransactionLog from './SRC/Logs/TransactionLog';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -22,6 +23,7 @@ export default function App() {
         <Stack.Screen name='products' component={ProductsPage} options={{ headerShown: false }}/>
         <Stack.Screen name='productInfo' component={ProductInfo} options={{ headerShown: false }}/>
         <Stack.Screen name='sellerHomepage' component={SellerPage} options={{ headerShown: false }}/>
+        <Stack.Screen name='sellerPOVHomepage' component={sellerPOVHomepage} options={{ headerShown: false }}/>
         <Stack.Screen name='fundsControl' component={FundControlPage} options={{ headerShown: false }}/>
         <Stack.Screen name='transaction' component={TransactionLog} options={{ headerShown: false }}/>
       </Stack.Navigator>

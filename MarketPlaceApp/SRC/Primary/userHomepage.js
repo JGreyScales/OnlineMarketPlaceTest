@@ -226,7 +226,7 @@ export default function UserHomePage({navigation}) {
         <View style={GlobalStyles.profileContainer}>
           <Image
             style={GlobalStyles.profileImage}
-            source={{ uri: content.userPhoto ? `data:image/png;base64,${content.userPhoto}` : undefined }}
+            source={{ uri: content.userPhoto ? content.userPhoto : '' }}
             resizeMode="cover"
           />
           <Text style={GlobalStyles.userName}>{content.userName}</Text>
@@ -237,7 +237,7 @@ export default function UserHomePage({navigation}) {
         <View style={GlobalStyles.buttonContainer}>
           <CustomButton text="Update Profile" onPress={openModal} />
           <CustomButton text="Browse Products" onPress={() => onContextSwitch('products')} />
-          <CustomButton text="Seller Portal" onPress={() => onContextSwitch('sellerHomepage')} />
+          <CustomButton text="Seller Portal" onPress={() => onContextSwitch('sellerPOVHomepage')} />
           <CustomButton text="Add Funds" onPress={() => onContextSwitch('fundsControl')} />
           <CustomButton text="View Transactions" onPress={() => onContextSwitch('transaction')} />
           <CustomButton text="Sign out" onPress={onSignout} />

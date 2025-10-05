@@ -4,7 +4,6 @@ const {getUserIDFromToken} = require('../middleware/auth')
 const express = require("express");
 const router = express.Router();
 
-
 router.get("/:sellerID/products/:amount", validateGetSeller, async (req, res) => {
     console.log("get x amount of sellers products ran")
     const sellerObj = new Seller()
@@ -26,6 +25,19 @@ router.get("/:sellerID", validateGetSeller, async (req, res) => {
     else {sellerObj.setSellerID(req.params.sellerID)}
     try {
         const result = await sellerObj.getSeller()
+        return res.status(result.statusCode).json(result)
+    } catch (error){
+        return res.status(400).send(error.message)
+    } 
+});
+
+router.get("/:sellerID/interests", validateGetSeller, async (req, res) => {
+    console.log("get seller ran")
+    const sellerObj = new Seller()
+    if (req.params.sellerID === 'home') {sellerObj.setSellerID(await getUserIDFromToken(req))}
+    else {sellerObj.setSellerID(req.params.sellerID)}
+    try {
+        const result = await sellerObj.getSellerInterests()
         return res.status(result.statusCode).json(result)
     } catch (error){
         return res.status(400).send(error.message)
