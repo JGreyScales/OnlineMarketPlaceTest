@@ -32,12 +32,15 @@ class Product {
     }
 
     static getSellerID(productID) {
-        let query = "SELECT sellerID FROM Product WHERE productID = ?"
-        connection.query(query, [parseInt(productID)], (err, results) => {
-            if (err) return 0
-            if (results.length === 0) return 0
-            return parseInt(results[0].sellerID)
+        return new Promise((resolve, reject) => {
+            let query = "SELECT sellerID FROM Product WHERE productID = ?"
+            connection.query(query, [parseInt(productID)], (err, results) => {
+                if (err) return reject(0)
+                if (results.length === 0) return reject(0)
+                return resolve(parseInt(results[0].sellerID))
+            })
         })
+
     }
 
 

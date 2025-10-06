@@ -1,18 +1,19 @@
 const { isFloat, isInt } = require('validator');
 const {Product} = require('../controllers/Product/productController')
 const {authenticateToken} = require('../middleware/auth')
-ALLOWED_FIELDS = ['productName', 'productImage', 'productBio', 'productPrice', 'rating']
+ALLOWED_FIELDS = ['productName', 'productImage', 'productBio', 'productPrice', 'productInterests', 'rating']
 
 async function validateGetProduct(req, res, next){
-    const isAuthenticated = await authenticateToken(req)
-    if (!isAuthenticated) {
-        return res.status(401).json({ error: 'Authentication Failed' });
-    }
-
    if (req.params.productID){
     if (isNaN(req.params.productID) || req.params.productID < 1){
         return res.status(400).json({error: `Invalid productID`})
     }
+   }
+
+
+   const isAuthenticated = await authenticateToken(req)
+   if (!isAuthenticated) {
+       return res.status(401).json({ error: 'Authentication Failed' });
    }
 
     next()

@@ -4,12 +4,15 @@ import navigateNewPage from '../functions/NavigateNewScreen';
 import SessionStorage from 'react-native-session-storage';
 import { CustomButton } from '../functions/CustomButton';
 import { useEffect, useState } from 'react';
+import { useRoute } from '@react-navigation/native';
 
 
 export default function TransactionLog({navigation}){
+    const route = useRoute()
     const [error, setError] = useState(null)
 
     const [transactionsList, setTransactionsList] = useState([])
+    const [sellerView, setSellerView] = useState((route.params && route.params.sellerID) ? true : false)
 
     // modals
     const [showSellerModal, setShowSellerModal] = useState(false)
@@ -28,7 +31,10 @@ export default function TransactionLog({navigation}){
     const grabTransactionsWithFilter = async () => {
       try {
         const sessionToken = await SessionStorage.getItem('@sessionKey');
-        const requestBody = {}
+        const requestBody = {
+          sellerMode : sellerView
+        }
+        
         if (selectedSellerID > 0) {requestBody.sellerID = selectedSellerID}
         if (selectedProductID > 0) {requestBody.productID = selectedProductID}
         if (selectedTransactionID > 0) {requestBody.transactionID = selectedTransactionID}
@@ -140,7 +146,7 @@ export default function TransactionLog({navigation}){
             renderItem={({ item }) => (
               <View style={GlobalStyles.transactionLogItem}>
                 <View style={GlobalStyles.transactionTextGroup}>
-                  <Text style={GlobalStyles.transactionSeller}>Seller: {item.sellerName}</Text>
+                  <Text style={GlobalStyles.transactionSeller}>{sellerView ? `Buyer: ${item.buyerID}` : `Seller: ${item.sellerName}`}</Text>
                   <Text style={GlobalStyles.transactionProduct}>Product: {item.productName}</Text>
                   <Text style={GlobalStyles.transactionDate}>ID {item.ID} on {item.date}</Text>
                 </View>

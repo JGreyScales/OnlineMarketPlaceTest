@@ -53,9 +53,14 @@ class TransactionList {
         });
     }
 
-    populateTransactionListWithFilter(valueDict, userID) {
+    populateTransactionListWithFilter(valueDict, userID, sellerMode) {
         return new Promise((resolve, reject) => {
-            let query = "SELECT transactionID, userID, sellerID, productID, priceAmount, date FROM Transaction WHERE userID = ?";
+            let query = "SELECT transactionID, userID, sellerID, productID, priceAmount, date FROM Transaction WHERE ";
+            if (sellerMode) {
+                query += 'sellerID = ?'
+            } else {
+                query += 'userID = ?'
+            }
             const filterList = [];
             const valuesList = [userID];
     
@@ -85,6 +90,7 @@ class TransactionList {
                         );
                         await transactionOBJ.populateAll();
                         return {
+                            buyerID: transactionOBJ.getUserID(),
                             sellerName: transactionOBJ.getSellerName(),
                             sellerID: transactionOBJ.getSellerID(),
                             productName: transactionOBJ.getProductName(),

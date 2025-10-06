@@ -144,7 +144,7 @@ export default function ProductInfo({navigation}) {
                 <ScrollView style={GlobalStyles.productDetailContainer}>
                 <View style={GlobalStyles.productDetailImageContainer}>
                 <Image
-                    source={{ uri: productContent.productImage ? `data:image/png;base64,${productContent.productImage}` : undefined }}
+                    source={{ uri: productContent.productImage ? productContent.productImage : undefined }}
                     style={GlobalStyles.productDetailImage}
                 />
                 </View>

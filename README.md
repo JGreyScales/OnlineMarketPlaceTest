@@ -14,18 +14,15 @@ A simple project to occupy time.
     - [X] must allow seller to set a productName
     - [X] must allow seller to set a productBio
     - [ ] must allow seller to set a product image
-    - [ ] must allow seller to see their selling history
+    - [x] must allow seller to see their selling history
 - [x] Users must be allowed to view an entire sellers page
-- [ ] When a product is sold, the seller should get 0.97x of the profit directly to their user account
+- [x] When a product is sold, the seller should get 0.97x of the profit directly to their user account
 - [x] have a mimiced screen for withdrawing money
 - [x] must allow user upload "money" to the site
 - [x] must allow user to spend their money on the site
 - [x] must use the node.JS server for data requests
 - [x] must use the MySQL server for data storage
-- [ ] must use properly formatted folders
-- [ ] must use test casing for all sections possible
-    - [ ] must use JEST for react-native testing
-    - [ ] JEST and SuperTest for Node.JS testing
+- [x] must use properly formatted folders
 
 # Known Issues
 - I cant really protect the payment portal from fraud, Ideally I would want to use something like Stripe to offset all that responsability so I dont even need to really handle the users wallet at all. But this is just a demo project so please ignore this oversight

@@ -51,12 +51,14 @@ router.get("/:transID", validateGetTransaction, async (req, res) => {
 
 router.post("/transactionList", validatePostTransaction, async (req, res) => {
     console.log('ran get transactionList')
-    // bodyContains 0..*
-    // possibleContains = [productID, sellerID, transactionID]
-    const userID = await getUserIDFromToken(req)
+    // bodyContains 1..*
+    // possibleContains = [productID, sellerID, transactionID, sellerMode]
+    const sellerMode = req.body.sellerMode
+    delete req.body.sellerMode
+    userID = await getUserIDFromToken(req)
     const transactionListOBJ = new TransactionList()
     try {
-        const result = await transactionListOBJ.populateTransactionListWithFilter(req.body, userID)
+        const result = await transactionListOBJ.populateTransactionListWithFilter(req.body, userID, sellerMode)
         return res.status(result.statusCode).send(result.data)
     } catch (error) {
         console.log(error)

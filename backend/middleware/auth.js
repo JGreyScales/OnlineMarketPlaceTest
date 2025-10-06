@@ -3,7 +3,7 @@ const {Product} = require('../controllers/Product/productController')
 
 
 function authenticateToken(req) {
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
         // format "Bearer <token>"
         const token = req.header('Authorization')?.split(' ')[1];
 
@@ -12,7 +12,7 @@ function authenticateToken(req) {
             return resolve(false); // No token, reject
         }
 
-        jwt.verify(token, process.env.JWT_SECRET, (err, payload) => {
+        jwt.verify(token, process.env.JWT_SECRET, async (err, payload) => {
             if (err) {
                 console.log(`failed on ${err}`)
                 return resolve(false); // Invalid token, reject
@@ -38,26 +38,25 @@ function authenticateToken(req) {
                     if (req.method === 'GET' && (req.route.path === '/:sellerID/products/:amount' ||req.route.path === '/:sellerID' || req.route.path === '/:sellerID/products' || req.route.path === '/:sellerID/rating')) {
                         return resolve(true)
                     }
-                    console.log(req.route.path)
                     console.log('Failed on seller object permission checking')
                     return resolve(false)
                 }
             }
 
             if (req.params.productID) {
-                const sellerID = Product.getSellerID(req.params.productID)
+                const sellerID = await Product.getSellerID(req.params.productID)
                 if (payload.userID !== sellerID) {
                     if (req.method === 'GET' && (req.route.path === '/:productID' || req.route.path === '/:productID/purchase')){
                         return resolve(true)
                     } else if (req.method === 'POST' && req.route.path === '/:productID/rating') {
                         return resolve(true)
                     }
+                    console.log(sellerID)
+                    console.log(payload.userID)
                     console.log('Failed on productSeller object permission checking')
                     return resolve(false)
                 }
             }
-
-
             return resolve(true); // Authentication successful
         });
     });

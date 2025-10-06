@@ -222,6 +222,7 @@ export default function SellerPOVHomepage({ navigation }) {
   return (
     <View style={{ padding: 16, flex: 1 }}>
       <CustomButton text="Back" onPress={() => navigation.goBack()} />
+      <CustomButton text="Transactions" onPress={() => navigation.navigate('transaction', {sellerID: sellerID})} />
       {/* Store Header */}
       <View style={GlobalStyles.storeHeader}>
         <Image

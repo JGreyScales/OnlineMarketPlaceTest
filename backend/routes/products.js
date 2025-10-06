@@ -25,7 +25,6 @@ router.get("/:productID", validateGetProduct, async (req, res) => {
         const result = await productListOBJ.getProduct(req.params.productID)
         return res.status(result.statusCode).json(result)
     } catch (error) {
-        console.log(error)
         return res.status(400).send(error.message)
     }
 });
@@ -65,10 +64,12 @@ router.delete("/:productID", validateDeleteProduct, async (req, res) => {
 
 router.patch("/:productID", validatePostProduct, async (req, res) => {
     console.log("update product ran")
-    // body contains [productName, productImage, productBio, productPrice]
+    // body contains [productName, productImage, productBio, productPrice, productInterests]
+    // contains 0..*
     const productListOBJ = new ProductList()
+    const sellerID = await getUserIDFromToken(req)
     try {
-        const result = await productListOBJ.patchProduct(req.body, req.params.productID)
+        const result = await productListOBJ.patchProduct(req.body, parseInt(req.params.productID), sellerID)
         return res.status(result.statusCode).json(result)
     } catch (error) {
         return res.status(400).send(error.message)

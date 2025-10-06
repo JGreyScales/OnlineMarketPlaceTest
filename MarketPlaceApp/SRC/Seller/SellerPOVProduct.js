@@ -7,7 +7,8 @@ import { useRoute } from '@react-navigation/native';
 
 
 const MAX_INTERESTS = 5;
-
+const MAX_PRODUCTNAME_LENGTH = 20;
+const MAX_PRODUCTBIO_LENGTH = 1000;
 
 export default function SellerPOVProduct({ navigation }) {
     const [error, setError] = useState(null)
@@ -32,16 +33,16 @@ export default function SellerPOVProduct({ navigation }) {
         setProductInterests((prev) => [...prev, interest]);
         setInterestInput('');
         setInterestSuggestions([]);
-      };
-    
-      const removeInterest = (interest) => {
+    };
+
+    const removeInterest = (interest) => {
         setProductInterests((prev) => prev.filter((i) => i !== interest));
-      };
+    };
 
     const getProductInfo = async () => {
         try {
-            const sessionToken = await sessionStorage.getItem('@SessionKey')
-            const response = await fetch(`http://localhost:3000/product/${route.params.productID}`, {
+            const sessionToken = await SessionStorage.getItem('@sessionKey');
+            const response = await fetch(`http://localhost:3000/product/${route.params.ProductID}`, {
                 method: 'GET',
                 headers: {
                     Authorization: sessionToken
@@ -65,41 +66,121 @@ export default function SellerPOVProduct({ navigation }) {
         }
     }
 
-    useEffect(() => {
+    const onSubmitProductInfo = async () => {
+        try {
+            const sessionToken = await SessionStorage.getItem('@sessionKey');
+            const bodyData = {
+                productName: productName,
+                productImage: productImage,
+                productBio: productBio,
+                productPrice: productPrice,
+                productInterests: productInterests
+            }
 
+            const response = await fetch(`http://localhost:3000/${route.params.ProductID}`, {
+                method: 'PATCH',
+                headers: {
+                    Authorization: sessionToken,
+                    'CONTENT-TYPE': 'application/json'
+                },
+                body: JSON.stringify(bodyData)
+            })
+
+            if (!response.ok) {
+                setError('Error updating product')
+                return
+            }
+
+            getProductInfo()
+        } catch (error) {
+            setError('Error updating product info:' + error.message)
+        }
+    }
+
+    useEffect(() => {
+        if (interestInput.length === 0) {
+            setInterestSuggestions([]);
+            return;
+        }
+
+        const fetchSuggestions = async () => {
+            setFetchingSuggestions(true);
+            try {
+                const sessionToken = await SessionStorage.getItem('@sessionKey');
+
+                const response = await fetch(`http://localhost:3000/interest/AC/${interestInput}`, {
+                    headers: {
+                        Authorization: sessionToken,
+                    },
+                });
+                if (response.ok) {
+                    const interestList = [];
+                    const suggestions = await response.json();
+                    suggestions.data.forEach(element => {
+                        if (!productInterests.includes(element.tag)) {
+                            interestList.push(element.tag)
+                        }
+                    });
+                    setInterestSuggestions(interestList);
+                } else {
+                    setInterestSuggestions([]);
+                }
+            } catch {
+                setInterestSuggestions([]);
+            } finally {
+                setFetchingSuggestions(false);
+            }
+        };
+
+        // Debounce fetch with a timeout
+        const timeoutId = setTimeout(fetchSuggestions, 300);
+        return () => clearTimeout(timeoutId);
+    }, [interestInput, productInterests])
+
+    useEffect(() => {
+        getProductInfo()
     }, [])
 
     return (
         <View style={GlobalStyles.container}>
             <CustomButton text="Back" onPress={() => navigation.goBack()} />
-            <CustomButton text="Submit" onPress={() => { }} />
+            <CustomButton text="Submit" onPress={onSubmitProductInfo} />
 
             {/* productName */}
+            <Text style={GlobalStyles.inputLabel}>Product Name</Text>
             <TextInput
                 style={GlobalStyles.input}
                 placeholder='Products Name'
                 value={productName}
                 onChangeText={setProductName}
+                maxLength={MAX_PRODUCTNAME_LENGTH}
             />
+            <Text style={GlobalStyles.charCount}>{productName.length} / {MAX_PRODUCTNAME_LENGTH}</Text>
+
 
             {/* productBio */}
+            <Text style={GlobalStyles.inputLabel}>Product Bio</Text>
             <TextInput
                 style={[GlobalStyles.input, GlobalStyles.multilineInput]}
                 placeholder='Product Bio'
                 value={productBio}
                 onChangeText={setProductBio}
                 multiline={true}
+                maxLength={MAX_PRODUCTBIO_LENGTH}
             />
+            <Text style={GlobalStyles.charCount}>{productBio.length} / {MAX_PRODUCTBIO_LENGTH}</Text>
 
             {/* productPrice */}
+            <Text style={GlobalStyles.inputLabel}>Product Price</Text>
             <TextInput
-                style={GlobalStyles}
+                style={GlobalStyles.input}
                 placeholder='0'
                 keyboardType='numeric'
                 value={productPrice}
                 onChangeText={(text) => {
-                    if (text === '') {setProductPrice(0)}
-                    else if (!isNaN(parseFloat(text)) && parseFloat(text) > 0.00) {setProductPrice(parseFloat(text))}}
+                    if (text === '') { setProductPrice(0) }
+                    else if (!isNaN(parseFloat(text)) && parseFloat(text) > 0.00) { setProductPrice(parseFloat(text)) }
+                }
                 }
             />
 
@@ -113,24 +194,24 @@ export default function SellerPOVProduct({ navigation }) {
                 autoCapitalize='none'
                 autoCorrect={false}
             />
-            {fetchingSuggestions && <Text>Loading suggetsions...</Text>}
+            {fetchingSuggestions && <Text>Loading suggestions...</Text>}
             {interestSuggestions.length > 0 && (
                 <FlatList
-                data={interestSuggestions}
-                keyExtractor={(item) => item}
-                style={GlobalStyles.suggestionList}
-                keyboardShouldPersistTaps="handled"
-                renderItem={({item}) => (
-                    <TouchableOpacity style={GlobalStyles.suggestionItem} onPress={() => addInterest(item)}>
-                        <Text>{item}</Text>
-                    </TouchableOpacity>
-                )}
+                    data={interestSuggestions}
+                    keyExtractor={(item) => item}
+                    style={GlobalStyles.suggestionList}
+                    keyboardShouldPersistTaps="handled"
+                    renderItem={({ item }) => (
+                        <TouchableOpacity style={GlobalStyles.suggestionItem} onPress={() => addInterest(item)}>
+                            <Text>{item}</Text>
+                        </TouchableOpacity>
+                    )}
                 />
             )}
 
             <View>
                 {productInterests.map((interest) => (
-                    <View key={interest} style={{flexDirection: 'row', alignItems: 'center'}}>
+                    <View key={interest} style={{ flexDirection: 'row', alignItems: 'center' }}>
                         <Text>{interest}</Text>
                         <TouchableOpacity onPress={() => removeInterest(interest)}>
                             <Text style={GlobalStyles.removeInterest}> ×</Text>
@@ -138,12 +219,16 @@ export default function SellerPOVProduct({ navigation }) {
                     </View>
                 ))}
             </View>
-            {/* Other data */}
 
+            {/* Other data */}
             {/* Product Rating */}
+            <Text style={GlobalStyles.inputLabel}>Product Rating</Text>
+            <Text>⭐ {productRating}</Text>
 
             {/* Product Image */}
-
+            <View style={GlobalStyles.profileContainer}>
+                <Image source={{ uri: productImage ? productImage : undefined }} />
+            </View>
 
         </View>
     )

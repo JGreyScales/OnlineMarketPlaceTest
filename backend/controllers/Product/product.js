@@ -1,6 +1,8 @@
 const {Product} = require('./productController')
 const connection = require("../../models/db")
 const {Transaction} = require("../Transactions/transactionClass")
+const { Interest } = require('../interestController')
+const { contains } = require('validator')
 
 class ProductList {
     constructor(){}
@@ -55,6 +57,15 @@ class ProductList {
                     resolve(results);
                 });
             });
+
+            const payoutSellerQuery = "UPDATE User set userFundsAmount = userFundsAmount + ? WHERE userID = ?"
+            await new Promise(async (resolve, reject) => {
+                connection.query(payoutSellerQuery, [parseFloat(productOBJ.productPrice / 1.03).toFixed(2), productOBJ.sellerID], (err, results) => {
+                    console.log(err)
+                    if (err) return reject({statusCode: 4000, message: `Could not payout seller: ${err.sqlMessage}`});
+                    resolve(results)
+                })
+            })
     
             // Create a transaction log
             const date = new Date().toISOString().split('T')[0];
@@ -117,9 +128,47 @@ class ProductList {
     
     
 
-    async patchProduct(valuesDict, productID){
-        return new Promise((resolve, reject) => {
-            const query = "UPDATE Product SET "
+    async patchProduct(valuesDict, productID, sellerID){
+        return new Promise(async (resolve, reject) => {
+
+            if (valuesDict.productInterests){
+                const intersetOBJ = new Interest();
+                const productTagIDs = [];
+
+
+                try {
+                    for (const interestTag of valuesDict.productInterests) {
+                        const tagID = await intersetOBJ.findTagID(interestTag)
+                        productTagIDs.push(tagID.data)
+                    }
+
+                    const purgeProductInterestsQuery = "DELETE FROM Interest_bridge WHERE productID = ?";
+                    await connection.query("SET SQL_SAFE_UPDATES = 0")
+                    await new Promise((resolve, reject) => {
+                        connection.query(purgeProductInterestsQuery, [productID], (err, results) => {
+                            if (err) return reject(err);
+                            resolve(results)
+                        })
+                    })
+                    await connection.query("SET SQL_SAFE_UPDATES = 1")
+
+                    const insertQuery = "INSERT INTO Interest_bridge (ProductID, SellerID, tagID) VALUES (?, ?, ?)"
+                    for (const interestID of productTagIDs){
+                        await new Promise((resolve, reject) => {
+                            connection.query(insertQuery, [productID, sellerID, interestID], (err, results) => {
+                                if (err) return reject(err);
+                                resolve(results)
+                            })
+                        })
+                    }
+                } catch (error) {
+                    return reject({statusCode: 400, message: `Error processing interests: ${error.message}`})
+                }
+                delete valuesDict.productInterests
+            }
+
+
+            let query = "UPDATE Product SET "
             const updates = []
             const valuesList = []
 
@@ -132,6 +181,7 @@ class ProductList {
             valuesList.push(productID)
 
             connection.query(query, valuesList, (err, results) => {
+                console.log(err)
                 if (err) return reject({statusCode: 400, message: `Database query error:${err.sqlMessage}`});
                 return resolve({statusCode: 202, message: `Product Updated`})
             })

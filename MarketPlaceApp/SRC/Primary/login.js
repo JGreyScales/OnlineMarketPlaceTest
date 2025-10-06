@@ -67,11 +67,11 @@ export default function Login({navigation}) {
   };
 
   return (
-    <View style={GlobalStyles.container}>
+    <View style={[GlobalStyles.container, {justifyContent: 'center'}]}>
       <Text style={GlobalStyles.title}>Login</Text>
 
       <TextInput
-        style={GlobalStyles.input}
+        style={[GlobalStyles.input, {width: '100%'}]}
         placeholder="Email"
         value={email}
         onChangeText={setEmail}
@@ -79,7 +79,7 @@ export default function Login({navigation}) {
       />
 
       <TextInput
-        style={GlobalStyles.input}
+        style={[GlobalStyles.input, {width: '100%'}]}
         placeholder="Password"
         value={password}
         onChangeText={setPassword}

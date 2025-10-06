@@ -1,5 +1,5 @@
 const {authenticateToken} = require('../middleware/auth')
-const ALLOWED_FIELDS = ['productID', 'sellerID', 'transactionID'];
+const ALLOWED_FIELDS = ['productID', 'sellerID', 'transactionID', 'sellerMode'];
 // transactions can only be created from the backend side
 // users will never send an API request specifically to make a transaction
 // the only API requests involving transactions will be the retrieval of them
@@ -73,6 +73,12 @@ async function validatePostTransaction(req, res, next) {
                 if (req.body.transactionID) {
                     if (isNaN(parseInt(req.body.transactionID)) || parseInt(req.body.transactionID) < 1){
                         return res.status(400).json({error: `Invalid transactionID`})
+                    }
+                }
+
+                if (req.body.sellerMode) {
+                    if (isNaN(Boolean(req.body.sellerMode))) {
+                        return res.status(400).json({error: 'Invalid sellerMode'})
                     }
                 }
             }
