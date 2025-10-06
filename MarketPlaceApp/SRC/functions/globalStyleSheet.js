@@ -15,6 +15,42 @@ export const colors = {
 };
 
 export const GlobalStyles = StyleSheet.create({
+  title: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    marginBottom: 30,
+  },
+
+  input: {
+    width: '100%',
+    height: 50,
+    backgroundColor: '#fff',
+    borderRadius: 8,
+    paddingHorizontal: 15,
+    marginBottom: 15,
+    borderColor: '#ccc',
+    borderWidth: 1,
+  },
+
+  button: {
+    width: '100%',
+    height: 50,
+    backgroundColor: '#007AFF',
+    borderRadius: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 10,
+  },
+
+  signUpButton: {
+    backgroundColor: '#34C759',
+  },
+
+  buttonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
   // Container and center alignment styles
   container: {
     flex: 1,

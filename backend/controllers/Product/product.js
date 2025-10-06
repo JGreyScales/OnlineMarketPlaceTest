@@ -7,6 +7,7 @@ class ProductList {
 
     createProduct(valuesDict){
         return new Promise((resolve, reject) => {
+            valuesList.createdAt = new Date().toISOString().split('T')[0]
             let query ="INSERT INTO Product ("
             const columnNameList = [];
             const valuesList = [];

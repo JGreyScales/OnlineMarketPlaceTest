@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Modal, TextInput, View, ActivityIndicator, TouchableOpacity, Text, Image, ScrollView, FlatList, Touchable } from 'react-native';
+import { Modal, TextInput, View, ActivityIndicator, TouchableOpacity, Text, Image, ScrollView, FlatList } from 'react-native';
 import { CustomButton } from '../functions/CustomButton';
 import { GlobalStyles, colors } from '../functions/globalStyleSheet';
 import SessionStorage from 'react-native-session-storage';
@@ -40,7 +40,7 @@ export default function SellerPOVHomepage({ navigation }) {
           Authorization: sessionToken
         }
       });
-  
+
       if (!response.ok) {
         if (response.status === 404) {
           setUserIsSeller(false);
@@ -50,13 +50,13 @@ export default function SellerPOVHomepage({ navigation }) {
         setLoadingSeller(false);
         return;
       }
-  
+
       const data = await response.json();
 
       setSellerBio(data.storepageBio)
       setSellerName(data.storepageName)
       setSellerPhoto(data.storepagePhoto)
-       
+
       setUserIsSeller(true);
       setLoadingSeller(false);
     } catch (error) {
@@ -64,7 +64,7 @@ export default function SellerPOVHomepage({ navigation }) {
       setLoadingSeller(false);
     }
   };
-  
+
   const getSellerInterests = async () => {
     try {
       const sessionToken = await SessionStorage.getItem('@sessionKey');
@@ -74,13 +74,13 @@ export default function SellerPOVHomepage({ navigation }) {
           Authorization: sessionToken
         }
       });
-  
+
       if (!response.ok) {
         setError('Error gathering seller interests');
         setLoadingInterests(false);
         return;
       }
-  
+
       const data = (await response.json()).data;
       const tags = data.map(interest => interest.tag);
 
@@ -92,7 +92,7 @@ export default function SellerPOVHomepage({ navigation }) {
       setLoadingInterests(false);
     }
   };
-  
+
   const getSellerProducts = async () => {
     try {
       const sessionToken = await SessionStorage.getItem('@sessionKey');
@@ -102,15 +102,15 @@ export default function SellerPOVHomepage({ navigation }) {
           Authorization: sessionToken
         }
       });
-  
+
       if (!response.ok) {
         setError('Error loading products');
         setLoadingProducts(false);
         return;
       }
-  
+
       const data = (await response.json()).data;
-  
+
       setSellerProducts(data)
 
       setLoadingProducts(false);
@@ -119,7 +119,7 @@ export default function SellerPOVHomepage({ navigation }) {
       setLoadingProducts(false);
     }
   };
-  
+
 
   const onUpdateProfile = async () => {
     try {
@@ -155,7 +155,7 @@ export default function SellerPOVHomepage({ navigation }) {
       // and the 0.03 goes to our wallet
       const response = await fetch(`http://localhost:3000/product`, {
         method: 'PUT',
-        headers : {
+        headers: {
           Authorization: sessionToken,
           'CONTENT-TYPE': 'application/json'
         },
@@ -170,11 +170,34 @@ export default function SellerPOVHomepage({ navigation }) {
     }
   }
 
+  const onRegisterNewSeller = async () => {
+    try {
+      const sessionToken = await SessionStorage.getItem('@sessionKey');
+      const response = await fetch('http://localhost:3000/seller', {
+        method: 'PUT',
+        headers: {
+          Authorization: sessionToken
+        }
+      })
+
+      if (response.ok) {
+        getSellerDetails()
+        setUserIsSeller(true)
+      }
+
+
+    } catch (error) {
+      setError('Error creating seller:' + error.message)
+    }
+  }
+
   useEffect(() => {
+    getSellerDetails()
     getSellerInterests()
     getSellerProducts()
-    getSellerDetails()
   }, [])
+
+
 
   if (loadingInterests || loadingProducts || loadingSeller) {
     <ActivityIndicator size="large" color={colors.primary} />
@@ -185,9 +208,15 @@ export default function SellerPOVHomepage({ navigation }) {
   }
 
   if (!userIsSeller) {
-    <>
+    <View style={GlobalStyles.container}>
+      <CustomButton text="Back" onPress={() => navigation.goBack()} />
+      <Text syle={GlobalStyles.title}>Register as a seller?</Text>
 
-    </>
+      <TouchableOpacity style={GlobalStyles.button} onPress={onRegisterNewSeller}>
+        <Text style={GlobalStyles.buttonText}>Yes</Text>
+      </TouchableOpacity>
+
+    </View>
   }
 
   return (
@@ -257,10 +286,10 @@ export default function SellerPOVHomepage({ navigation }) {
             placeholder='Storepage Name'
             value={sellerName}
             onChangeText={(text) => {
-              if (text.length <= MAX_STOREPAGENAME_LENGTH) { setSellerName(text)}
+              if (text.length <= MAX_STOREPAGENAME_LENGTH) { setSellerName(text) }
             }}
             maxLength={MAX_STOREPAGENAME_LENGTH} />
-          <Text>{sellerName.length || 0} / {MAX_STOREPAGENAME_LENGTH}</Text>
+          <Text style={GlobalStyles.charCount}>{sellerName.length || 0} / {MAX_STOREPAGENAME_LENGTH}</Text>
 
 
           <Text style={GlobalStyles.inputLabel}>Storepage Bio</Text>
@@ -274,7 +303,7 @@ export default function SellerPOVHomepage({ navigation }) {
             multiline={true}
             maxLength={MAX_STOREPAGEBIO_LENGTH}
           />
-          <Text>{sellerBio.length || 0} / {MAX_STOREPAGEBIO_LENGTH}</Text>
+          <Text style={GlobalStyles.charCount}>{sellerBio.length || 0} / {MAX_STOREPAGEBIO_LENGTH}</Text>
 
           <TouchableOpacity
             style={[GlobalStyles.button, GlobalStyles.modalButtonCancel]}
@@ -290,6 +319,7 @@ export default function SellerPOVHomepage({ navigation }) {
         </View>
       </Modal>
 
+      {/*  create product modal */}
       <Modal visible={showCreateProduct} transparent animationType='slide'>
         <View style={GlobalStyles.modalContainer}>
           <Text style={GlobalStyles.modalTitle}>Create Product</Text>
@@ -299,11 +329,11 @@ export default function SellerPOVHomepage({ navigation }) {
             placeholder='Product Name'
             value={productDetails.productName}
             onChangeText={(text) => {
-              if (text.length <= MAX_PRODUCTNAME_LENGTH) { setProductDetails(prev => ({...prev, productName: text})) }
+              if (text.length <= MAX_PRODUCTNAME_LENGTH) { setProductDetails(prev => ({ ...prev, productName: text })) }
             }}
             maxLength={MAX_PRODUCTNAME_LENGTH}
           />
-          <Text>{productDetails.productName.length} / {MAX_PRODUCTNAME_LENGTH}</Text>
+          <Text style={GlobalStyles.charCount}>{productDetails.productName.length} / {MAX_PRODUCTNAME_LENGTH}</Text>
 
           <Text style={GlobalStyles.inputLabel}>Product Bio</Text>
           <TextInput
@@ -311,12 +341,12 @@ export default function SellerPOVHomepage({ navigation }) {
             placeholder='Product bio'
             value={productDetails.productBio}
             onChangeText={(text) => {
-              if (text.length <= MAX_PRODUCTBIO_LENGTH) { setProductDetails(prev => ({...prev, productBio: text})) }
+              if (text.length <= MAX_PRODUCTBIO_LENGTH) { setProductDetails(prev => ({ ...prev, productBio: text })) }
             }}
             multiline={true}
             maxLength={MAX_PRODUCTBIO_LENGTH}
           />
-          <Text>{productDetails.productBio.length} / {MAX_PRODUCTBIO_LENGTH}</Text>
+          <Text style={GlobalStyles.charCount}>{productDetails.productBio.length} / {MAX_PRODUCTBIO_LENGTH}</Text>
 
           <Text style={GlobalStyles.inputLabel}>Product Price</Text>
           <TextInput
@@ -326,11 +356,11 @@ export default function SellerPOVHomepage({ navigation }) {
             value={productDetails.productPrice}
             onChangeText={(text) => {
               if (text === '') {
-                setProductDetails(prev => ({... prev, productPrice: 0}))
+                setProductDetails(prev => ({ ...prev, productPrice: 0 }))
               }
               else if ((!isNaN(parseFloat(text)) && parseFloat(text) > 0.00)) {
-                 setProductDetails(prev => ({...prev, productPrice: parseFloat(text)}))
-                }
+                setProductDetails(prev => ({ ...prev, productPrice: parseFloat(text) }))
+              }
             }}
           />
 

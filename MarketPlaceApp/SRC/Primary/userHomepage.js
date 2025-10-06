@@ -3,7 +3,6 @@ import {
   View,
   Text,
   Image,
-  StyleSheet,
   ScrollView,
   ActivityIndicator,
   TouchableOpacity,
@@ -12,7 +11,6 @@ import {
   FlatList,
   KeyboardAvoidingView,
   Platform,
-  Button,
 } from 'react-native';
 import SessionStorage from 'react-native-session-storage';
 import { GlobalStyles, colors } from '../functions/globalStyleSheet';
