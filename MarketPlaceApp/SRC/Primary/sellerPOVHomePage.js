@@ -40,7 +40,6 @@ export default function SellerPOVHomepage({ navigation }) {
           Authorization: sessionToken
         }
       });
-
       if (!response.ok) {
         if (response.status === 404) {
           setUserIsSeller(false);
@@ -56,7 +55,6 @@ export default function SellerPOVHomepage({ navigation }) {
       setSellerBio(data.storepageBio)
       setSellerName(data.storepageName)
       setSellerPhoto(data.storepagePhoto)
-
       setUserIsSeller(true);
       setLoadingSeller(false);
     } catch (error) {
@@ -76,7 +74,9 @@ export default function SellerPOVHomepage({ navigation }) {
       });
 
       if (!response.ok) {
-        setError('Error gathering seller interests');
+        if (response.status !== 404) {
+          setError('Error gathering seller interests');
+        }
         setLoadingInterests(false);
         return;
       }
@@ -104,7 +104,9 @@ export default function SellerPOVHomepage({ navigation }) {
       });
 
       if (!response.ok) {
-        setError('Error loading products');
+        if (response.status !== 404){
+          setError('Error loading products');
+        }
         setLoadingProducts(false);
         return;
       }
@@ -181,7 +183,7 @@ export default function SellerPOVHomepage({ navigation }) {
       })
 
       if (response.ok) {
-        getSellerDetails()
+        await response.json()
         setUserIsSeller(true)
       }
 
@@ -193,36 +195,45 @@ export default function SellerPOVHomepage({ navigation }) {
 
   useEffect(() => {
     getSellerDetails()
-    getSellerInterests()
-    getSellerProducts()
+
   }, [])
 
+  useEffect(() => {
+    if (userIsSeller) {
+      getSellerDetails()
+      getSellerInterests()
+      getSellerProducts()
+    }
+  }, [userIsSeller])
 
+  if (!userIsSeller) {
+    return (
+      <View>
+        <CustomButton text="Back" onPress={() => navigation.goBack()}/>
+        <View style={[GlobalStyles.container, { justifyContent: 'center' }]}>
+          <Text style={GlobalStyles.title}>Register as a seller?</Text>
+          <TouchableOpacity style={GlobalStyles.button} onPress={onRegisterNewSeller}>
+            <Text style={GlobalStyles.buttonText}>Yes</Text>
+          </TouchableOpacity>
+        </View>
+      </View>)
+  }
 
   if (loadingInterests || loadingProducts || loadingSeller) {
-    <ActivityIndicator size="large" color={colors.primary} />
+    return (<ActivityIndicator size="large" color={colors.primary} />)
   }
 
   if (error) {
-    <Text style={GlobalStyles.errorText}>{error}</Text>
+    return (
+      <Text style={GlobalStyles.errorText}>{error}</Text>)
   }
 
-  if (!userIsSeller) {
-    <View style={GlobalStyles.container}>
-      <CustomButton text="Back" onPress={() => navigation.goBack()} />
-      <Text syle={GlobalStyles.title}>Register as a seller?</Text>
 
-      <TouchableOpacity style={GlobalStyles.button} onPress={onRegisterNewSeller}>
-        <Text style={GlobalStyles.buttonText}>Yes</Text>
-      </TouchableOpacity>
-
-    </View>
-  }
 
   return (
     <View style={{ padding: 16, flex: 1 }}>
       <CustomButton text="Back" onPress={() => navigation.goBack()} />
-      <CustomButton text="Transactions" onPress={() => navigation.navigate('transaction', {sellerID: sellerID})} />
+      <CustomButton text="Transactions" onPress={() => navigation.navigate('transaction', { sellerID: sellerID })} />
       {/* Store Header */}
       <View style={GlobalStyles.storeHeader}>
         <Image

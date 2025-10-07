@@ -99,12 +99,20 @@ class Seller {
         return new Promise((resolve, reject) => {
             const query = "DELETE FROM Seller WHERE sellerID = ?"
             const productQuery = "DELETE FROM Product WHERE sellerID = ?"
+            const productInterestQuery = "DELETE FROM Interest_bridge WHERE sellerID = ?"
+
             connection.query(productQuery, [this.#sellerID], (err, results) => {
                 if (err) return reject({statusCode: 400, message: `Database query error:${err.sqlMessage}`});
             })
+
             connection.query(query, [this.#sellerID], (err, results) => {
                 if (err) return reject({statusCode: 400, message: `Database query error:${err.sqlMessage}`});
             })
+            
+            connection.query(productInterestQuery, [this.#sellerID], (err, results) => {
+                if (err) return reject({statusCode: 400, message: `Database query error:${err.sqlMessage}`})
+            })
+
             return resolve({statusCode: 200, message: `Seller Deleted`})
         })
     }

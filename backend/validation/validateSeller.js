@@ -44,19 +44,22 @@ async function validatePostSeller(req, res, next){
                         return res.status(400).json({error: `Invalid field: ${key}`})
                     }
                 })
-            } else {
-                return res.status(400).json({error: `No body present`})
-            }
 
-            if (req.body.storepageBio){
-                if (isEmpty(req.body.storepageBio) || req.body.storepageBio.length > Seller.MAX_SELLER_STORAGEPAGE_BIO_LENGTH) {
-                    return res.status(400).json({error: `Invalid storepage Bio`})
+
+                if (req.body.storepageBio){
+                    if (isEmpty(req.body.storepageBio) || req.body.storepageBio.length > Seller.MAX_SELLER_STORAGEPAGE_BIO_LENGTH) {
+                        return res.status(400).json({error: `Invalid storepage Bio`})
+                    }
                 }
-            }
-
-            if (req.body.storepageName){
-                if (req.body.storepageName.length < Seller.MIN_SELLER_STORAGEPAGE_NAME_LENGTH || req.body.storepageName.length > Seller.MAX_SELLER_STORAGEPAGE_BIO_LENGTH){
-                    return res.status(400).json({error: `Invalid storepage Name`})
+    
+                if (req.body.storepageName){
+                    if (req.body.storepageName.length < Seller.MIN_SELLER_STORAGEPAGE_NAME_LENGTH || req.body.storepageName.length > Seller.MAX_SELLER_STORAGEPAGE_BIO_LENGTH){
+                        return res.status(400).json({error: `Invalid storepage Name`})
+                    }
+                }
+            } else {
+                if (req.method !== 'PUT' || req.route.path !== ''){
+                    return res.status(400).json({error: `No body present`})
                 }
             }
 

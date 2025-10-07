@@ -190,6 +190,28 @@ export default function UserHomePage({navigation}) {
     )
   }
 
+  const onDeleteAccount = async () => {
+    try {
+      const sessionToken = await SessionStorage.getItem('@sessionKey');
+      const response = await fetch('http://localhost:3000/user/', {
+        method: 'DELETE',
+        headers: {
+          Authorization: sessionToken
+        }
+      })
+
+      if (!response.ok){
+        setError('Error deleting account')
+        return
+      }
+
+      onSignout()
+    } catch (error) {
+      setError('Error deleting account: ' + error.message)
+    }
+    
+  }
+
   const onContextSwitch = (newPage) => {navigateNewPage(newPage, navigation)}
 
   if (loading) {
@@ -336,6 +358,12 @@ export default function UserHomePage({navigation}) {
                 onPress={onSave}
               >
                 <Text style={GlobalStyles.buttonText}>Save</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={GlobalStyles.button}
+                onPress={onDeleteAccount}
+              >
+                <Text style={GlobalStyles.buttonText}>Delete</Text>
               </TouchableOpacity>
             </View>
         </KeyboardAvoidingView>

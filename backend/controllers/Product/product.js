@@ -228,7 +228,7 @@ class ProductList {
         })
     }
 
-    userIsSeller(sellerID) {
+    async userIsSeller(sellerID) {
         return new Promise((resolve, reject) => {
             const query = "SELECT 1 WHERE EXISTS (SELECT 1 FROM Seller WHERE sellerID = ?)"
             connection.query(query, [sellerID], (err, results) => {

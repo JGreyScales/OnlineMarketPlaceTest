@@ -40,7 +40,7 @@ router.get("/:sellerID/interests", validateGetSeller, async (req, res) => {
         const result = await sellerObj.getSellerInterests()
         return res.status(result.statusCode).json(result)
     } catch (error){
-        return res.status(400).send(error.message)
+        return res.status(error.statusCode).send(error.message)
     } 
 });
 

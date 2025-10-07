@@ -2,8 +2,7 @@ CREATE DATABASE  IF NOT EXISTS `market_place_test_db` /*!40100 DEFAULT CHARACTER
 USE `market_place_test_db`;
 -- MySQL dump 10.13  Distrib 8.0.43, for Win64 (x86_64)
 --
--- ------------------------------------------------------
--- Server version	8.0.43-0ubuntu0.24.04.1
+
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -28,8 +27,18 @@ CREATE TABLE `Interest` (
   `tagID` mediumint unsigned NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`tagID`),
   UNIQUE KEY `tag_UNIQUE` (`tag`) /*!80000 INVISIBLE */
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci PACK_KEYS=1 COMMENT='The list of interests';
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci PACK_KEYS=1 COMMENT='The list of interests';
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `Interest`
+--
+
+LOCK TABLES `Interest` WRITE;
+/*!40000 ALTER TABLE `Interest` DISABLE KEYS */;
+INSERT INTO `Interest` VALUES ('electronics',1),('clothing',2),('furniture',3),('home decor',4),('toys',5),('books',6),('jewelry',7),('appliances',8),('sports equipment',9),('automotive',10),('health & beauty',11),('handmade',12),('vintage',13),('artwork',14),('collectibles',15),('music instruments',16),('shoes',17),('garden & outdoors',18),('phones',19),('computers',20);
+/*!40000 ALTER TABLE `Interest` ENABLE KEYS */;
+UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -40,4 +49,4 @@ CREATE TABLE `Interest` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-10-02  2:10:34
+-- Dump completed on 2025-10-06 22:25:58

@@ -112,27 +112,50 @@ class User {
         })
     }
 
-    deleteUser(){
-        return new Promise((resolve, reject) => {
-            if (ProductList.userIsSeller(this.#userID)){
-                const sellerOBJ = new Seller()
-                sellerOBJ.setSellerID(this.#userID)
-                try{
-                    sellerOBJ.deleteSeller()
-                } catch (error) {
-                    return reject({statusCode: 400, message: error.message})
-                }
+    async deleteUser() {
+        console.log('delete user in userController running');
+        const ProductOBJ = new ProductList();
+    
+        // Check if the user is a seller and delete the seller if true
+        if (await ProductOBJ.userIsSeller(this.#userID)) {
+            const sellerOBJ = new Seller();
+            sellerOBJ.setSellerID(this.#userID);
+    
+            try {
+                await sellerOBJ.deleteSeller();
+            } catch (error) {
+                return { statusCode: 400, message: error.message };
             }
-
-            let query = "DELETE FROM User WHERE userID = ?"
-            connection.query(query, [this.#userID], (err, results) => {
-                if (err) {
-                    return reject({statusCode: 400, message: `Database query error: ${err.sqlMessage}`})
-                }
-                return resolve({statusCode: 202, message: 'User Deleted'})
-            })
-        })
+        }
+        
+        // Promisified query function
+        const query = (sql, params) => {
+            return new Promise((resolve, reject) => {
+                connection.query(sql, params, (err, results) => {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(results);
+                    }
+                });
+            });
+        };
+    
+        try {
+            // Delete from User table
+            await query("DELETE FROM User WHERE userID = ?", [this.#userID]);
+    
+            // Delete from Interest_bridge table
+            await query("DELETE FROM Interest_bridge WHERE userID = ?", [this.#userID]);
+    
+            return { statusCode: 202, message: 'User Deleted' };
+    
+        } catch (err) {
+            console.log(err);
+            return { statusCode: 400, message: `Database query error: ${err.sqlMessage || err.message}` };
+        }
     }
+    
 
 
     async updateUser(valuesDict) {
