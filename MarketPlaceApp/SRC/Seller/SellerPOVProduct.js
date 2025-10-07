@@ -4,6 +4,7 @@ import { CustomButton } from '../functions/CustomButton';
 import { GlobalStyles, colors } from '../functions/globalStyleSheet';
 import SessionStorage from 'react-native-session-storage';
 import { useRoute } from '@react-navigation/native';
+import Toast from 'react-native-toast-message'
 
 
 const MAX_INTERESTS = 5;
@@ -86,10 +87,10 @@ export default function SellerPOVProduct({ navigation }) {
                 body: JSON.stringify(bodyData)
             })
 
-            if (!response.ok) {
-                setError('Error updating product')
-                return
-            }
+            Toast.show({
+                type: response.ok ? 'success' : 'error',
+                text1: response.ok ? 'Product information updated' : 'Error updating product infromation'
+            })
 
             getProductInfo()
         } catch (error) {
@@ -123,6 +124,10 @@ export default function SellerPOVProduct({ navigation }) {
                     });
                     setInterestSuggestions(interestList);
                 } else {
+                    Toast.show({
+                        type: 'error',
+                        text1: 'Error fetching interest suggestions'
+                    })
                     setInterestSuggestions([]);
                 }
             } catch {

@@ -4,6 +4,7 @@ import { CustomButton } from '../functions/CustomButton';
 import { useRoute } from '@react-navigation/native';
 import { GlobalStyles, colors } from '../functions/globalStyleSheet';
 import SessionStorage from 'react-native-session-storage';
+import Toast from 'react-native-toast-message';
 
 export default function SellerPage({navigation}){
     const route = useRoute();
@@ -32,6 +33,10 @@ export default function SellerPage({navigation}){
 
             if (!response.ok){
                 if (response.status === 404){
+                    Toast.show({
+                        type: 'info',
+                        text1: 'No ratings for this seller yet'
+                    })
                     sellerContent.rating = 0.0
                 } else {
                     setError('Unable to retrieve seller rating');
@@ -84,6 +89,14 @@ export default function SellerPage({navigation}){
             })
 
             if (!response.ok){
+                if (response.status === 404){
+                    setLoadingSellerDetails(false)
+                    Toast.show({
+                        type: 'info',
+                        text1: 'Seller has no products to display'
+                    })
+                    return
+                }
                 setError("Unable to retrieve seller products")
                 return
             }

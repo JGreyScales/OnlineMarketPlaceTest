@@ -17,6 +17,7 @@ import { GlobalStyles, colors } from '../functions/globalStyleSheet';
 import { CommonActions } from '@react-navigation/native';
 import navigateNewPage from '../functions/NavigateNewScreen';
 import { CustomButton } from '../functions/CustomButton';
+import Toast from 'react-native-toast-message';
 
 
 const MAX_BIO_LENGTH = 250;
@@ -66,6 +67,12 @@ export default function UserHomePage({navigation}) {
                 const tagStringsReponse = await fetch('http://localhost:3000/interest/tags', {method: 'POST', headers: {Authorization: sessionToken, 'Content-Type': 'application/json'}, body: JSON.stringify({tags: interestData.data})})
                 const tagStrings = await tagStringsReponse.json()
                 data.userInterests = tagStrings;
+            } else {
+              Toast.show({
+                type: 'error',
+                text1: 'Error fetching user interests',
+                text2: 'This may occur if the user has no interests set'
+              })
             }
           
             setContent(data);
@@ -123,6 +130,11 @@ export default function UserHomePage({navigation}) {
                 });
           setInterestSuggestions(interestList);
         } else {
+          Toast.show({
+            type: 'error',
+            text1: 'Error fetching suggestions for the user',
+            text2: 'This may occur if user has no interests set'
+          })
           setInterestSuggestions([]);
         }
       } catch {
@@ -172,8 +184,17 @@ export default function UserHomePage({navigation}) {
         }
         
         const response = await fetch('http://localhost:3000/user/', {method: 'PATCH', headers: {'Authorization': sessionToken, 'Content-Type': 'application/json'}, body: JSON.stringify(requestBody)});
-    } catch (err) {
-
+        if (!response.ok) {
+          Toast.show({
+            type: 'error',
+            text1: 'Error updating user info'
+          })
+        }
+      } catch (err) {
+      Toast.show({
+        type:'error',
+        text1:'Error updating user info'
+      })
     }
     setInterests(interests)
   };
@@ -201,7 +222,10 @@ export default function UserHomePage({navigation}) {
       })
 
       if (!response.ok){
-        setError('Error deleting account')
+        Toast.show({
+          type: 'error',
+          text1: 'Error occured while deleting account'
+        })
         return
       }
 

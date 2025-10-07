@@ -1,6 +1,7 @@
 // App.js
 
 import React from 'react';
+import Toast from 'react-native-toast-message'
 import Login from './SRC/Primary/login';
 import UserHomePage from './SRC/Primary/userHomepage';
 import ProductsPage from './SRC/MarketPlace/Products';
@@ -17,18 +18,21 @@ const Stack = createNativeStackNavigator();
 
 export default function App() {
   return (
-    <NavigationContainer>
-      <Stack.Navigator initialRouteName='login'>
-        <Stack.Screen name='login' component={Login} options={{ headerShown: false }}/>
-        <Stack.Screen name='homepage' component={UserHomePage} options={{ headerShown: false }}/>
-        <Stack.Screen name='products' component={ProductsPage} options={{ headerShown: false }}/>
-        <Stack.Screen name='productInfo' component={ProductInfo} options={{ headerShown: false }}/>
-        <Stack.Screen name='SellerPOVProduct' component={SellerPOVProduct} options={{ headerShown: false }}/>
-        <Stack.Screen name='sellerHomepage' component={SellerPage} options={{ headerShown: false }}/>
-        <Stack.Screen name='sellerPOVHomepage' component={SellerPOVHomepage} options={{ headerShown: false }}/>
-        <Stack.Screen name='fundsControl' component={FundControlPage} options={{ headerShown: false }}/>
-        <Stack.Screen name='transaction' component={TransactionLog} options={{ headerShown: false }}/>
-      </Stack.Navigator>
-    </NavigationContainer>
+    <>
+      <NavigationContainer>
+        <Stack.Navigator initialRouteName='login'>
+          <Stack.Screen name='login' component={Login} options={{ headerShown: false }} />
+          <Stack.Screen name='homepage' component={UserHomePage} options={{ headerShown: false }} />
+          <Stack.Screen name='products' component={ProductsPage} options={{ headerShown: false }} />
+          <Stack.Screen name='productInfo' component={ProductInfo} options={{ headerShown: false }} />
+          <Stack.Screen name='SellerPOVProduct' component={SellerPOVProduct} options={{ headerShown: false }} />
+          <Stack.Screen name='sellerHomepage' component={SellerPage} options={{ headerShown: false }} />
+          <Stack.Screen name='sellerPOVHomepage' component={SellerPOVHomepage} options={{ headerShown: false }} />
+          <Stack.Screen name='fundsControl' component={FundControlPage} options={{ headerShown: false }} />
+          <Stack.Screen name='transaction' component={TransactionLog} options={{ headerShown: false }} />
+        </Stack.Navigator>
+      </NavigationContainer>
+      <Toast />
+    </>
   )
 }

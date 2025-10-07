@@ -3,6 +3,7 @@ import { Modal, TextInput, View, ActivityIndicator, TouchableOpacity, Text, Imag
 import { CustomButton } from '../functions/CustomButton';
 import { GlobalStyles, colors } from '../functions/globalStyleSheet';
 import SessionStorage from 'react-native-session-storage';
+import Toast from 'react-native-toast-message'
 
 const MAX_STOREPAGENAME_LENGTH = 25;
 const MAX_STOREPAGEBIO_LENGTH = 500;
@@ -42,6 +43,10 @@ export default function SellerPOVHomepage({ navigation }) {
       });
       if (!response.ok) {
         if (response.status === 404) {
+          Toast.show({
+            type:'info',
+            text1:'User is not a seller'
+          })
           setUserIsSeller(false);
         } else {
           setError('Error gathering seller details');
@@ -76,6 +81,12 @@ export default function SellerPOVHomepage({ navigation }) {
       if (!response.ok) {
         if (response.status !== 404) {
           setError('Error gathering seller interests');
+        } else {
+          Toast.show({
+            type: 'info',
+            text1: 'Seller has no interests',
+            text2: 'Assign interests to products to populate seller interests'
+          })
         }
         setLoadingInterests(false);
         return;
@@ -85,7 +96,6 @@ export default function SellerPOVHomepage({ navigation }) {
       const tags = data.map(interest => interest.tag);
 
       setSellerInterests(tags)
-
       setLoadingInterests(false);
     } catch (error) {
       setError('Error fetching seller interests: ' + error.message);
@@ -106,6 +116,12 @@ export default function SellerPOVHomepage({ navigation }) {
       if (!response.ok) {
         if (response.status !== 404){
           setError('Error loading products');
+        } else {
+          Toast.show({
+            type: 'info',
+            text1: 'User has no products',
+            text2: 'Consider adding some products to your page'
+          })
         }
         setLoadingProducts(false);
         return;
@@ -114,8 +130,8 @@ export default function SellerPOVHomepage({ navigation }) {
       const data = (await response.json()).data;
 
       setSellerProducts(data)
-
       setLoadingProducts(false);
+
     } catch (error) {
       setError('Error fetching seller products: ' + error.message);
       setLoadingProducts(false);
@@ -141,6 +157,12 @@ export default function SellerPOVHomepage({ navigation }) {
         body: JSON.stringify(updateBody)
       })
 
+
+      Toast.show({
+        type: response.ok ? 'success' : 'error',
+        text1: response.ok ? 'Seller profile has been updated' : 'Error updating the seller profile'
+      })
+
       setShowUpdateProfile(false)
       getSellerDetails()
     }
@@ -164,6 +186,11 @@ export default function SellerPOVHomepage({ navigation }) {
         body: JSON.stringify(productDetails)
       })
 
+      Toast.show({
+        type: response.ok ? 'success' : 'error',
+        text1: response.ok ? 'Created new product' : 'Error creating new product'
+      })
+
       setShowCreateProduct(false)
       setProductDetails({ productName: '', productImage: null, productBio: '', productPrice: 0.00 })
       await getSellerProducts()
@@ -180,6 +207,11 @@ export default function SellerPOVHomepage({ navigation }) {
         headers: {
           Authorization: sessionToken
         }
+      })
+
+      Toast.show({
+        type: response.ok ? 'success' : 'error',
+        text1: response.ok ? 'User registered as a seller' : 'Error registering user as a seller'
       })
 
       if (response.ok) {

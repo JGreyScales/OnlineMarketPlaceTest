@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { Platform, StyleSheet, Text, View, TextInput, TouchableOpacity, Alert } from 'react-native';
+import { Platform, StyleSheet, Text, View, Animated, TextInput, TouchableOpacity, Alert } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { GlobalStyles, colors } from '../functions/globalStyleSheet';
 import SessionStorage from 'react-native-session-storage';
+import Toast from 'react-native-toast-message';
 
 export default function Login({navigation}) {
   const [email, setEmail] = useState('');
@@ -30,8 +31,10 @@ export default function Login({navigation}) {
         navigation.navigate('homepage')
         
       } else {
-        const errorData = await response.json();
-        
+        Toast.show({
+          type: 'error',
+          text1: 'Invalid Signin'
+        })
       }
     } catch (error) {
      return
@@ -56,6 +59,11 @@ export default function Login({navigation}) {
       });
 
       if (response.ok) {
+        Toast.show({
+          type: 'success',
+          text1: 'Created new user'
+        })
+
         const data = await response.json();
         await handleSignIn()
       } else {

@@ -1,9 +1,10 @@
-import { Modal, ScrollView, TextInput, View, TouchableOpacity, Text } from 'react-native';
+import { Modal, ScrollView, TextInput, View, TouchableOpacity, Text, ToastAndroid } from 'react-native';
 import { GlobalStyles, colors } from '../functions/globalStyleSheet';
 import navigateNewPage from '../functions/NavigateNewScreen';
 import SessionStorage from 'react-native-session-storage';
 import { CustomButton } from '../functions/CustomButton';
 import { useEffect, useState } from 'react';
+import Toast from 'react-native-toast-message'
 
 
 export default function FundControlPage({navigation}){
@@ -47,18 +48,26 @@ export default function FundControlPage({navigation}){
         const numericAmount = parseFloat(addFundAmount);
         if (isNaN(numericAmount) || numericAmount < 0.01) {
             setWithdrawing(false);
+            Toast.show({
+                type:'error',
+                text1: 'Invalid funds amount was entered'
+            })
             return; // Stop if invalid input
         }
 
         if (withdrawing && parseFloat(fundAmount) < numericAmount){
             setWithdrawing(false);
+            Toast.show({
+                type: 'error',
+                text1: 'Funds not avaliable for withdraw'
+            })
             return; // trying to withdraw funds that dont exist
         } 
         const adjustedAmount = withdrawing ? numericAmount * -1 : numericAmount;
     
         try {
             const sessionToken = await SessionStorage.getItem('@sessionKey');
-            await fetch('http://localhost:3000/user/fund', {
+            const response = await fetch('http://localhost:3000/user/fund', {
                 method: 'PATCH',
                 headers: {
                     Authorization: sessionToken,
@@ -66,6 +75,11 @@ export default function FundControlPage({navigation}){
                 },
                 body: JSON.stringify({ fundsAmount: adjustedAmount }),
             });
+
+            Toast.show({
+                type: response.ok ? 'success' : 'error',
+                text1: response.ok ? 'Funds modified' : 'Error updating user funds'
+            })
     
             fetchUserFunds();
         } catch (error) {
