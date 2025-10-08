@@ -25,14 +25,24 @@ A simple project to occupy time.
 - [x] must use properly formatted folders
 
 
-Creating Users
+Creating Users & Authentication failure
 
 
 ![](https://github.com/JGreyScales/OnlineMarketPlaceTest/blob/main/README_FILES/create_user.gif)
 
 
 Encrypted userPassword
+
+
 ![](https://github.com/JGreyScales/OnlineMarketPlaceTest/blob/main/README_FILES/password_encrypted.png)
+
+
+Deleting an account
+
+
+![](https://github.com/JGreyScales/OnlineMarketPlaceTest/blob/main/README_FILES/password_encrypted.png)
+
+
 
 
 
