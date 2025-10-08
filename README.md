@@ -25,10 +25,7 @@ A simple project to occupy time.
 - [x] must use properly formatted folders
 
 
-Creating Users
-
-
-![](https://github.com/JGreyScales/OnlineMarketPlaceTest/blob/main/GIFS/create_user.gif)
+![Creating Users](https://github.com/JGreyScales/OnlineMarketPlaceTest/blob/main/GIFS/create_user.gif)
 
 
 
