@@ -28,7 +28,11 @@ A simple project to occupy time.
 Creating Users
 
 
-![](https://github.com/JGreyScales/OnlineMarketPlaceTest/blob/main/GIFS/create_user.gif)
+![](https://github.com/JGreyScales/OnlineMarketPlaceTest/blob/main/README_FILES/create_user.gif)
+
+
+Encrypted userPassword
+![](https://github.com/JGreyScales/OnlineMarketPlaceTest/blob/main/README_FILES/password_encrypted.png)
 
 
 
