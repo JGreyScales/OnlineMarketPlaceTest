@@ -41,7 +41,6 @@ router.put("", validatePostProduct, async (req, res) => {
             const result = await productListOBJ.createProduct(req.body)
             return res.status(result.statusCode).json(result)
         } catch (error) {
-            console.log(error)
             return res.status(400).send(error.message)
         }
     } else {
@@ -57,7 +56,6 @@ router.delete("/:productID", validateDeleteProduct, async (req, res) => {
         const result = await productListOBJ.deleteProduct(req.body.productID)
         return res.status(result.statusCode).json(result)
     } catch (error) {
-        console.log(error)
         return res.status(400).send(error.message)
     }
 });

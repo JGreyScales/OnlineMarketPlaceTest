@@ -69,9 +69,9 @@ export default function UserHomePage({navigation}) {
                 data.userInterests = tagStrings;
             } else {
               Toast.show({
-                type: 'error',
-                text1: 'Error fetching user interests',
-                text2: 'This may occur if the user has no interests set'
+                type: response.status === 404 ? 'info' : 'error',
+                text1: response.status === 404 ? 'User has no interests set ': 'Error fetching user interests',
+                text2: response.status === 404 ? 'Set some in update profile' : 'This may occur if the user has no interests set'
               })
             }
           
@@ -184,12 +184,10 @@ export default function UserHomePage({navigation}) {
         }
         
         const response = await fetch('http://localhost:3000/user/', {method: 'PATCH', headers: {'Authorization': sessionToken, 'Content-Type': 'application/json'}, body: JSON.stringify(requestBody)});
-        if (!response.ok) {
-          Toast.show({
-            type: 'error',
-            text1: 'Error updating user info'
-          })
-        }
+        Toast.show({
+          type: response.ok ? 'success' : 'error',
+          text1: response.ok ? 'Updated profile' : 'Could not update profile'
+        })
       } catch (err) {
       Toast.show({
         type:'error',
@@ -221,11 +219,12 @@ export default function UserHomePage({navigation}) {
         }
       })
 
+      Toast.show({
+        type: response.ok ? 'success' : 'error',
+        text1: response.ok ? 'User has been deleted' : 'Error deleting the user'
+      })
+
       if (!response.ok){
-        Toast.show({
-          type: 'error',
-          text1: 'Error occured while deleting account'
-        })
         return
       }
 

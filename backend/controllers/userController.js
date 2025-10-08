@@ -151,7 +151,6 @@ class User {
             return { statusCode: 202, message: 'User Deleted' };
     
         } catch (err) {
-            console.log(err);
             return { statusCode: 400, message: `Database query error: ${err.sqlMessage || err.message}` };
         }
     }

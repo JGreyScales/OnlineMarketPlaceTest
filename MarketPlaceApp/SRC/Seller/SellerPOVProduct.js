@@ -78,7 +78,7 @@ export default function SellerPOVProduct({ navigation }) {
                 productInterests: productInterests
             }
 
-            const response = await fetch(`http://localhost:3000/${route.params.ProductID}`, {
+            const response = await fetch(`http://localhost:3000/product/${route.params.ProductID}`, {
                 method: 'PATCH',
                 headers: {
                     Authorization: sessionToken,

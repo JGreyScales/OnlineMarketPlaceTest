@@ -17,7 +17,6 @@ router.post("/authenticate", async (req, res) => {
         const result = await userOBJ.authenticateUser(req.body.email, req.body.password);
         return res.status(result.statusCode).json(result);
     } catch (error) {
-        console.log(error)
         return res.status(error.statusCode).send(error.message);
     }
 });
@@ -72,7 +71,6 @@ router.get("/weightedStorePage/:amount", validateGetUser, async (req, res) => {
         const result = await userOBJ.generateWeightedProductList(parseInt(req.params.amount))
         return res.status(result.statusCode).json(result)
     } catch (error) {
-        console.log(error)
         return res.status(error.statusCode || 400).send(error.message)
     }
 })
@@ -86,7 +84,6 @@ router.delete("/", validateDeleteUser, async (req, res) => {
         const result = await userOBJ.deleteUser()
         return res.status(result.statusCode).json(result)
     } catch (error) {
-        console.log(error)
         return res.status(400).send(error.message)
     }
 });

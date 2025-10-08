@@ -6,7 +6,7 @@ A simple project to occupy time.
     - [x] user password must be encrypted
     - [x] user must be able to authenticate with an existing account
     - [x] user must be denied if authentication fails
-    - [ ] must allow user to delete an account
+    - [x] must allow user to delete an account
     - [x] must allow user to modify an account
     - [x] must allow users to view their purchase history
 - [X] must allow seller to post a product
@@ -23,6 +23,12 @@ A simple project to occupy time.
 - [x] must use the node.JS server for data requests
 - [x] must use the MySQL server for data storage
 - [x] must use properly formatted folders
+
+
+Creating Users
+![](https://github.com/JGreyScales/OnlineMarketPlaceTest/GIF/create_user.gif)
+
+
 
 # Known Issues
 - I cant really protect the payment portal from fraud, Ideally I would want to use something like Stripe to offset all that responsability so I dont even need to really handle the users wallet at all. But this is just a demo project so please ignore this oversight

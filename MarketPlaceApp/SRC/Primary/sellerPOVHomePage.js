@@ -48,7 +48,7 @@ export default function SellerPOVHomepage({ navigation }) {
             text1:'User is not a seller'
           })
           setUserIsSeller(false);
-        } else {
+        } else if (userIsSeller) {
           setError('Error gathering seller details');
         }
         setLoadingSeller(false);

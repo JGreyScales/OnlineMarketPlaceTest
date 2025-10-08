@@ -51,8 +51,6 @@ function authenticateToken(req) {
                     } else if (req.method === 'POST' && req.route.path === '/:productID/rating') {
                         return resolve(true)
                     }
-                    console.log(sellerID)
-                    console.log(payload.userID)
                     console.log('Failed on productSeller object permission checking')
                     return resolve(false)
                 }

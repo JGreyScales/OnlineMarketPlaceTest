@@ -20,7 +20,6 @@ class TransactionList {
             let transactionQuery = `SELECT transactionID, userID, sellerID, productID, priceAmount, date FROM Transaction WHERE ${columnName} = ? ORDER BY date DESC`;
             connection.query(transactionQuery, [ID], async (err, results) => {
                 if (err) {
-                    console.log(err);
                     return reject({ statusCode: 500, message: `Database query error: ${err.sqlMessage}` });
                 }
 

@@ -9,7 +9,7 @@ class ProductList {
 
     createProduct(valuesDict){
         return new Promise((resolve, reject) => {
-            valuesList.createdAt = new Date().toISOString().split('T')[0]
+            valuesDict.createdAt = new Date().toISOString().split('T')[0]
             let query ="INSERT INTO Product ("
             const columnNameList = [];
             const valuesList = [];
@@ -61,7 +61,6 @@ class ProductList {
             const payoutSellerQuery = "UPDATE User set userFundsAmount = userFundsAmount + ? WHERE userID = ?"
             await new Promise(async (resolve, reject) => {
                 connection.query(payoutSellerQuery, [parseFloat(productOBJ.productPrice / 1.03).toFixed(2), productOBJ.sellerID], (err, results) => {
-                    console.log(err)
                     if (err) return reject({statusCode: 4000, message: `Could not payout seller: ${err.sqlMessage}`});
                     resolve(results)
                 })
@@ -121,7 +120,6 @@ class ProductList {
             return { statusCode: 202, message: "Rating added" };
         } catch (err) {
             // Handle any errors
-            console.log(err);
             return { statusCode: 400, message: `Database query error: ${err.message || err.sqlMessage}` };
         }
     }
@@ -181,7 +179,6 @@ class ProductList {
             valuesList.push(productID)
 
             connection.query(query, valuesList, (err, results) => {
-                console.log(err)
                 if (err) return reject({statusCode: 400, message: `Database query error:${err.sqlMessage}`});
                 return resolve({statusCode: 202, message: `Product Updated`})
             })

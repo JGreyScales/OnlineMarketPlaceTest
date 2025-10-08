@@ -61,7 +61,6 @@ router.post("/transactionList", validatePostTransaction, async (req, res) => {
         const result = await transactionListOBJ.populateTransactionListWithFilter(req.body, userID, sellerMode)
         return res.status(result.statusCode).send(result.data)
     } catch (error) {
-        console.log(error)
         return res.status(error.statusCode || 400).send(error.message)
     }
 

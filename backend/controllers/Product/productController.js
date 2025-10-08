@@ -62,7 +62,6 @@ class Product {
             connection.query(query, [this.#productID], (err, results) => {
                 if (err) return reject(err);
                 if (results.length === 0) return resolve(0);
-                console.log(results[0].rating)
                 this.#productRating = (parseFloat(results[0].rating)).toFixed(1)
                 resolve()
             })
