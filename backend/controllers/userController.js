@@ -115,9 +115,13 @@ class User {
     async deleteUser() {
         console.log('delete user in userController running');
         const ProductOBJ = new ProductList();
+        const userIsSeller = await ProductOBJ.userIsSeller(this.#userID)
+
+        console.log(userIsSeller)
     
         // Check if the user is a seller and delete the seller if true
-        if (await ProductOBJ.userIsSeller(this.#userID)) {
+        if (userIsSeller) {
+            console.log('-- Deleting Seller Data')
             const sellerOBJ = new Seller();
             sellerOBJ.setSellerID(this.#userID);
     
@@ -127,6 +131,8 @@ class User {
                 return { statusCode: 400, message: error.message };
             }
         }
+
+        console.log('-- Deleting Data')
         
         // Promisified query function
         const query = (sql, params) => {
@@ -147,6 +153,7 @@ class User {
     
             // Delete from Interest_bridge table
             await query("DELETE FROM Interest_bridge WHERE userID = ?", [this.#userID]);
+            console.log('-- Submitting Results')
     
             return { statusCode: 202, message: 'User Deleted' };
     

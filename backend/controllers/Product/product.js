@@ -231,6 +231,7 @@ class ProductList {
             connection.query(query, [sellerID], (err, results) => {
                 if (err) return resolve(false);
                 if (results.length === 1) return resolve(true);
+                return resolve(false)
             })
         })
     }

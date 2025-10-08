@@ -4,6 +4,7 @@ import navigateNewPage from '../functions/NavigateNewScreen';
 import SessionStorage from 'react-native-session-storage';
 import { CustomButton } from '../functions/CustomButton';
 import { useEffect, useState } from 'react';
+import Toast from 'react-native-toast-message'
 
 export default function ProductsPage({navigation}) {
     const [error, setError] = useState(null);
@@ -21,6 +22,14 @@ export default function ProductsPage({navigation}) {
             });
 
             if (!response.ok) {
+                if (response.status === 404){
+                    Toast.show({
+                        type: 'error',
+                        text1: 'Could not find any products for you',
+                        text2: 'Try adding more interests!'
+                    })
+                    return
+                }
                 setError('Failed fetching products');
                 return;
             }

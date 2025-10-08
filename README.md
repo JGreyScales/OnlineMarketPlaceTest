@@ -40,10 +40,43 @@ Encrypted userPassword
 Deleting an account
 
 
-![](https://github.com/JGreyScales/OnlineMarketPlaceTest/blob/main/README_FILES/password_encrypted.png)
+![](https://github.com/JGreyScales/OnlineMarketPlaceTest/blob/main/README_FILES/delete_user.gif)
 
 
+Updating an account
 
+
+![](https://github.com/JGreyScales/OnlineMarketPlaceTest/blob/main/README_FILES/update_user.gif)
+
+
+Viewing purchase history
+
+
+![](https://github.com/JGreyScales/OnlineMarketPlaceTest/blob/main/README_FILES/purchase_history.png)
+
+
+Creating a new product
+
+
+![](https://github.com/JGreyScales/OnlineMarketPlaceTest/blob/main/README_FILES/adding_product.png)
+
+
+Viewing sellers sell history
+
+
+![](https://github.com/JGreyScales/OnlineMarketPlaceTest/blob/main/README_FILES/seller_history.png)
+
+
+Viewing sellers storepage
+
+
+![](https://github.com/JGreyScales/OnlineMarketPlaceTest/blob/main/README_FILES/sellers_page.png)
+
+
+Funds Control
+
+
+![](https://github.com/JGreyScales/OnlineMarketPlaceTest/blob/main/README_FILES/funds_control.png)
 
 
 # Known Issues
