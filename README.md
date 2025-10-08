@@ -58,7 +58,7 @@ Viewing purchase history
 Creating a new product
 
 
-![](https://github.com/JGreyScales/OnlineMarketPlaceTest/blob/main/README_FILES/adding_product.png)
+![](https://github.com/JGreyScales/OnlineMarketPlaceTest/blob/main/README_FILES/adding_product.gif)
 
 
 Viewing sellers sell history
